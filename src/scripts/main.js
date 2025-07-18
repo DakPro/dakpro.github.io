@@ -11,7 +11,7 @@ class FeedViewer {
         try {
             // Fetch the list of project directories
             const response = await fetch('project_feeds/');
-            if (!response.ok) throw new Error('Failed to load projects');
+            if (!response.ok) throw new Error('Failed to load projects:' + response.statusText);
             const text = await response.text();
             
             // Create a temporary element to parse the directory listing
@@ -23,17 +23,24 @@ class FeedViewer {
                 .filter(a => a.href.endsWith('/'))
                 .map(a => a.textContent.replace('/', ''));
 
-            // Add each project that has a feed.atom file
+            // Add each project that has a feed file (either .xml or .atom)
             for (const projectName of projectDirs) {
-                const feedUrl = `project_feeds/${projectName}/feed.atom`;
-                // Check if feed.atom exists
-                try {
-                    const feedResponse = await fetch(feedUrl, { method: 'HEAD' });
-                    if (feedResponse.ok) {
-                        this.addProject(projectName, feedUrl);
+                const feedUrls = [
+                    `project_feeds/${projectName}/feed.xml`,
+                    `project_feeds/${projectName}/feed.atom`
+                ];
+                
+                // Try both possible feed files
+                for (const feedUrl of feedUrls) {
+                    try {
+                        const feedResponse = await fetch(feedUrl, { method: 'HEAD' });
+                        if (feedResponse.ok) {
+                            this.addProject(projectName, feedUrl);
+                            break; // Stop after finding the first valid feed
+                        }
+                    } catch (error) {
+                        continue; // Try next file if this one fails
                     }
-                } catch (error) {
-                    console.warn(`No feed found for project: ${projectName}`);
                 }
             }
         } catch (error) {
