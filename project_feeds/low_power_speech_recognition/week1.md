@@ -3,7 +3,7 @@
 Went through the paper on Whisper.
 
 > Which model should we use:
-> ![Waza](w1.1.png)
+> ![Waza](week1.1.png)
 > For very low-power devices, the tiny model is expected to work, but what if base/small work?
 >> Choice of model:
 >> 1. By taking into account other processes running on the device -- better for deployment

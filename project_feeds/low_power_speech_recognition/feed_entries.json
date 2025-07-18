@@ -1,0 +1,20 @@
+{
+  "feed": {
+    "title": "Low Power Speech Recognition",
+    "author": {
+      "name": "Danylo Kvit",
+      "email": "kvit.2006@gmail.com"
+    },
+    "id": "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
+    "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/"
+  },
+  "entries": [
+    {
+      "title": "Week 1: Initial Results",
+      "id": "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
+      "updated": "2025-07-18T14:39:00Z",
+      "source": "week1.md",
+      "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/week1"
+    }
+  ]
+}
