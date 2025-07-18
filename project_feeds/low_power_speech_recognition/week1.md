@@ -48,24 +48,27 @@ Booting rPi with 64-bit standart (not headless) OS.
 
 3. To make the connection work, one should make static IP addresses on the connection for both Mac and rPi
 
-* For Mac:
-  1. goto *Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab*
-  2. change *configure ipv4* to manual
-  3. Input the static address (I chose 192.168.5.1)
-  4. Subnet musk is left 255.255.0.0, other empty fields are left empty
-
-* For rPi:
+For Mac:
+<ol>
+  <li>. goto *Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab*
+  <li>. change *configure ipv4* to manual
+  <li>. Input the static address (I chose 192.168.5.1)
+  <li>. Subnet musk is left 255.255.0.0, other empty fields are left empty
+</ol>
+For rPi:
   * For monitor system
-    1. Click on the double-arrow network symbol in the top right corner
-    2. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
-    > note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
-
-    > also set cloned MAC address to Permanent - not sure I completely understand what it does
-    3. Set *Method* to *Manual*
-    4. *Add*
-    5. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
-    6. Save
-    7. Reboot the rPi
+  <ol>
+    <li>. Click on the double-arrow network symbol in the top right corner
+    <li>. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
+    <i> note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
+    </i>
+    <i> also set cloned MAC address to Permanent - not sure I completely understand what it does </i>
+    <li>. Set *Method* to *Manual*
+    <li>. *Add*
+    <li>. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
+    <li>. Save
+    <li>. Reboot the rPi
+  </ol>
 
   * For headless system:**TODO**
 
