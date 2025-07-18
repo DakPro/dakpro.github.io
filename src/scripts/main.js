@@ -1,46 +1,5 @@
-interface FeedConfig {
-    feed: {
-        title: string;
-        author: {
-            name: string;
-            email?: string;
-        };
-        id: string;
-        link: string;
-    };
-    entries: Array<{
-        title: string;
-        id: string;
-        updated: string;
-        source: string;
-        link: string;
-    }>;
-}
-
-interface FeedEntry {
-    title: string;
-    content: string;
-    date: string;
-    link: string;
-    id: string;
-}
-
 class FeedViewer {
-    private container: HTMLElement;
-    private projects: Array<{
-        name: string;
-        entries: FeedEntry[];
-        directory: string;
-        config: FeedConfig;
-    }>;
-    private currentProject: {
-        name: string;
-        entries: FeedEntry[];
-        directory: string;
-        config: FeedConfig;
-    } | null;
-
-    constructor(containerId: string) {
+    constructor(containerId) {
         console.log('Initializing FeedViewer...');
         const container = document.getElementById(containerId);
         if (!container) throw new Error(`Container with id ${containerId} not found`);
@@ -53,7 +12,7 @@ class FeedViewer {
         this.setupAtomFeedLink();
     }
 
-    private setupAtomFeedLink() {
+    setupAtomFeedLink() {
         const existingLink = document.getElementById('atomFeedLink');
         if (!existingLink) {
             const linkElement = document.createElement('link');
@@ -65,9 +24,9 @@ class FeedViewer {
         }
     }
 
-    private updateAtomFeedLink() {
+    updateAtomFeedLink() {
         if (this.currentProject) {
-            const linkElement = document.getElementById('atomFeedLink') as HTMLLinkElement;
+            const linkElement = document.getElementById('atomFeedLink');
             if (linkElement) {
                 linkElement.href = `project_feeds/${this.currentProject.directory}/feed.xml`;
                 linkElement.title = `${this.currentProject.name} Atom Feed`;
@@ -90,7 +49,7 @@ class FeedViewer {
                     if (!configResponse.ok) {
                         throw new Error(`Failed to load feed configuration: ${configResponse.status} ${configResponse.statusText}`);
                     }
-                    const config: FeedConfig = await configResponse.json();
+                    const config = await configResponse.json();
                     console.log(`Loaded config for ${project.name}:`, config);
 
                     const entries = await this.loadEntries(project.directory, config);
@@ -126,8 +85,8 @@ class FeedViewer {
         }
     }
 
-    async loadEntries(projectDir: string, config: FeedConfig): Promise<FeedEntry[]> {
-        const entries: FeedEntry[] = [];
+    async loadEntries(projectDir, config) {
+        const entries = [];
         
         for (const entry of config.entries) {
             try {
@@ -155,7 +114,7 @@ class FeedViewer {
         return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }
 
-    async generateAtomFeed(projectDir: string, config: FeedConfig, entries: FeedEntry[]) {
+    async generateAtomFeed(projectDir, config, entries) {
         const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>${config.feed.title}</title>
@@ -181,7 +140,7 @@ class FeedViewer {
         console.log(`Generated Atom feed for ${projectDir}`);
     }
 
-    markdownToHtml(markdown: string, projectDir: string): string {
+    markdownToHtml(markdown, projectDir) {
         let html = markdown
             // Convert headers
             .replace(/^# (.*$)/gm, '<h1>$1</h1>')
@@ -206,7 +165,9 @@ class FeedViewer {
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
             // Convert emphasis
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            // Convert blockquotes
+            .replace(/^>(.*$)/gm, '<blockquote>$1</blockquote>');
 
         // Wrap lists in ul/ol tags
         html = html.replace(/<li>.*?<\/li>\n*/gs, match => {
@@ -219,7 +180,7 @@ class FeedViewer {
         return html;
     }
 
-    addProject(name: string, entries: FeedEntry[], directory: string, config: FeedConfig) {
+    addProject(name, entries, directory, config) {
         console.log(`Adding project ${name} with ${entries.length} entries`);
         this.projects.push({ name, entries, directory, config });
         this.updateTabs();
@@ -249,7 +210,7 @@ class FeedViewer {
         }
     }
 
-    createTabNavigation(): HTMLElement {
+    createTabNavigation() {
         console.log('Creating tab navigation');
         const tabNav = document.createElement('div');
         tabNav.className = 'tab-navigation';
@@ -257,7 +218,7 @@ class FeedViewer {
         return tabNav;
     }
 
-    displayProject(project: { name: string; entries: FeedEntry[]; directory: string; config: FeedConfig }) {
+    displayProject(project) {
         console.log(`Displaying project ${project.name}`);
         this.currentProject = project;
         this.updateTabs();
@@ -287,7 +248,7 @@ class FeedViewer {
         `;
     }
 
-    createFeedContainer(): HTMLElement {
+    createFeedContainer() {
         console.log('Creating feed container');
         const feedContainer = document.createElement('div');
         feedContainer.className = 'feed-container';
