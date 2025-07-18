@@ -1,0 +1,106 @@
+/* Main styles */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --background-color: #f8f9fa;
+  --text-color: #333;
+  --border-color: #dee2e6;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  gap: 1px;
+  background-color: var(--border-color);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+.tab {
+  padding: 12px 24px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  flex: 1;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.tab:hover {
+  background-color: #f0f0f0;
+}
+
+.tab.active {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+/* Feed Container */
+.feed-container {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+  min-height: 400px;
+}
+
+/* Feed Items */
+.feed-item {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.feed-item:last-child {
+  border-bottom: none;
+}
+
+.feed-item:hover {
+  background-color: var(--background-color);
+}
+
+.feed-item h2 {
+  margin: 0 0 8px 0;
+  color: var(--primary-color);
+}
+
+.feed-item .meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.feed-item .content {
+  margin-top: 8px;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Error State */
+.error {
+  color: #dc3545;
+  padding: 20px;
+  text-align: center;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  margin: 20px 0;
+} 
