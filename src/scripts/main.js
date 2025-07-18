@@ -9,25 +9,16 @@ class FeedViewer {
 
     async loadProjectFeeds() {
         try {
-            // Fetch the list of project directories
-            const response = await fetch('project_feeds/');
-            if (!response.ok) throw new Error('Failed to load projects:' + response.statusText);
-            const text = await response.text();
+            // Load projects from projects.json
+            const response = await fetch('project_feeds/projects.json');
+            if (!response.ok) throw new Error('Failed to load projects: ' + response.statusText);
+            const data = await response.json();
             
-            // Create a temporary element to parse the directory listing
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = text;
-            
-            // Find all directory links (they end with /)
-            const projectDirs = Array.from(tempDiv.querySelectorAll('a'))
-                .filter(a => a.href.endsWith('/'))
-                .map(a => a.textContent.replace('/', ''));
-
-            // Add each project that has a feed file (either .xml or .atom)
-            for (const projectName of projectDirs) {
+            // Try to load feed for each project
+            for (const project of data.projects) {
                 const feedUrls = [
-                    `project_feeds/${projectName}/feed.xml`,
-                    `project_feeds/${projectName}/feed.atom`
+                    `project_feeds/${project.directory}/feed.xml`,
+                    `project_feeds/${project.directory}/feed.atom`
                 ];
                 
                 // Try both possible feed files
@@ -35,7 +26,7 @@ class FeedViewer {
                     try {
                         const feedResponse = await fetch(feedUrl, { method: 'HEAD' });
                         if (feedResponse.ok) {
-                            this.addProject(projectName, feedUrl);
+                            this.addProject(project.name, feedUrl);
                             break; // Stop after finding the first valid feed
                         }
                     } catch (error) {
@@ -43,10 +34,19 @@ class FeedViewer {
                     }
                 }
             }
+
+            // Show message if no projects were loaded
+            if (this.projects.length === 0) {
+                this.container.innerHTML = `
+                    <div class="error">
+                        No project feeds found. Make sure each project directory contains a feed.xml or feed.atom file.
+                    </div>
+                `;
+            }
         } catch (error) {
             this.container.innerHTML = `
                 <div class="error">
-                    Failed to load projects: ${error.message || 'Unknown error'}
+                    ${error.message}
                 </div>
             `;
         }
