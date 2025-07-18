@@ -1,10 +1,6 @@
 {
   "projects": [
     {
-      "name": "Summer Research",
-      "directory": "summer_research"
-    },
-    {
       "name": "Low Power Speech Recognition",
       "directory": "low_power_speech_recognition"
     }

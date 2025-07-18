@@ -9,37 +9,44 @@ class FeedViewer {
 
     async loadProjectFeeds() {
         try {
-            // Load projects from projects.json
             const response = await fetch('project_feeds/projects.json');
             if (!response.ok) throw new Error('Failed to load projects: ' + response.statusText);
             const data = await response.json();
             
-            // Try to load feed for each project
             for (const project of data.projects) {
-                const feedUrls = [
-                    `project_feeds/${project.directory}/feed.xml`,
-                    `project_feeds/${project.directory}/feed.atom`
-                ];
-                
-                // Try both possible feed files
-                for (const feedUrl of feedUrls) {
-                    try {
-                        const feedResponse = await fetch(feedUrl, { method: 'HEAD' });
-                        if (feedResponse.ok) {
-                            this.addProject(project.name, feedUrl);
-                            break; // Stop after finding the first valid feed
+                try {
+                    // Try to load the markdown files first
+                    const mdFiles = await this.getMarkdownFiles(project.directory);
+                    if (mdFiles.length > 0) {
+                        // Create feed entries from markdown files
+                        const entries = await this.createEntriesFromMarkdown(project.directory, mdFiles);
+                        this.addProject(project.name, entries, project.directory);
+                    } else {
+                        // Fallback to existing feed file if no markdown files found
+                        const feedUrls = [
+                            `project_feeds/${project.directory}/feed.xml`,
+                            `project_feeds/${project.directory}/feed.atom`
+                        ];
+                        
+                        for (const feedUrl of feedUrls) {
+                            const feedResponse = await fetch(feedUrl, { method: 'HEAD' });
+                            if (feedResponse.ok) {
+                                const feedContent = await this.loadFeedFile(feedUrl);
+                                this.addProject(project.name, feedContent, project.directory);
+                                break;
+                            }
                         }
-                    } catch (error) {
-                        continue; // Try next file if this one fails
                     }
+                } catch (error) {
+                    console.warn(`Failed to load project ${project.name}:`, error);
+                    continue;
                 }
             }
 
-            // Show message if no projects were loaded
             if (this.projects.length === 0) {
                 this.container.innerHTML = `
                     <div class="error">
-                        No project feeds found. Make sure each project directory contains a feed.xml or feed.atom file.
+                        No project feeds or markdown files found.
                     </div>
                 `;
             }
@@ -52,8 +59,115 @@ class FeedViewer {
         }
     }
 
-    addProject(name, feedUrl) {
-        this.projects.push({ name, feedUrl });
+    async getMarkdownFiles(projectDir) {
+        try {
+            // Try to fetch the directory listing (this might not work on all servers)
+            const response = await fetch(`project_feeds/${projectDir}/`);
+            const text = await response.text();
+            
+            // Parse HTML directory listing
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            
+            // Find all markdown files
+            return Array.from(doc.querySelectorAll('a'))
+                .map(a => a.href)
+                .filter(href => href.endsWith('.md'))
+                .map(href => href.split('/').pop());
+        } catch (error) {
+            console.warn('Failed to get directory listing, trying known files');
+            // Fallback: try to fetch specific files we know might exist
+            const knownFiles = ['week1.md', 'week2.md', 'week3.md'];
+            const existingFiles = [];
+            
+            for (const file of knownFiles) {
+                try {
+                    const response = await fetch(`project_feeds/${projectDir}/${file}`, { method: 'HEAD' });
+                    if (response.ok) {
+                        existingFiles.push(file);
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            return existingFiles;
+        }
+    }
+
+    async createEntriesFromMarkdown(projectDir, mdFiles) {
+        const entries = [];
+        
+        for (const file of mdFiles) {
+            try {
+                const response = await fetch(`project_feeds/${projectDir}/${file}`);
+                if (!response.ok) continue;
+                
+                const content = await response.text();
+                const title = this.extractTitle(content) || file.replace('.md', '');
+                const date = await this.getFileDate(projectDir, file);
+                
+                entries.push({
+                    title,
+                    content,
+                    date,
+                    link: `https://dakpro.github.io/${projectDir}/${file.replace('.md', '')}`,
+                    id: `urn:uuid:${this.generateUUID()}`,
+                });
+            } catch (error) {
+                console.warn(`Failed to load ${file}:`, error);
+            }
+        }
+        
+        // Sort entries by date, newest first
+        return entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    extractTitle(markdown) {
+        // Look for the first # heading
+        const match = markdown.match(/^#\s+(.+)$/m);
+        return match ? match[1] : null;
+    }
+
+    async getFileDate(projectDir, file) {
+        try {
+            // Try to get the file's last modified date
+            const response = await fetch(`project_feeds/${projectDir}/${file}`);
+            const lastModified = response.headers.get('last-modified');
+            return lastModified || new Date().toISOString();
+        } catch (error) {
+            return new Date().toISOString();
+        }
+    }
+
+    generateUUID() {
+        // Simple UUID v4 generation
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    async loadFeedFile(feedUrl) {
+        const response = await fetch(feedUrl);
+        if (!response.ok) throw new Error('Failed to fetch feed');
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'application/xml');
+        
+        return Array.from(xml.getElementsByTagName('entry')).map(entry => ({
+            title: entry.querySelector('title')?.textContent || 'Untitled',
+            content: entry.querySelector('content')?.textContent || '',
+            date: entry.querySelector('updated')?.textContent || new Date().toISOString(),
+            link: entry.querySelector('link')?.getAttribute('href') || '#',
+            id: entry.querySelector('id')?.textContent || `urn:uuid:${this.generateUUID()}`,
+        }));
+    }
+
+    addProject(name, entries, directory) {
+        this.projects.push({ name, entries, directory });
         this.updateTabs();
     }
 
@@ -65,7 +179,7 @@ class FeedViewer {
             const tab = document.createElement('button');
             tab.className = 'tab';
             tab.textContent = project.name;
-            tab.onclick = () => this.loadProject(project);
+            tab.onclick = () => this.displayProject(project);
             
             if (this.currentProject?.name === project.name) {
                 tab.classList.add('active');
@@ -74,9 +188,8 @@ class FeedViewer {
             tabNav.appendChild(tab);
         });
 
-        // If we have projects but none selected, select the first one
         if (this.projects.length > 0 && !this.currentProject) {
-            this.loadProject(this.projects[0]);
+            this.displayProject(this.projects[0]);
         }
     }
 
@@ -87,30 +200,34 @@ class FeedViewer {
         return tabNav;
     }
 
-    async loadProject(project) {
+    displayProject(project) {
         this.currentProject = project;
         this.updateTabs();
         
         const feedContainer = this.container.querySelector('.feed-container') || this.createFeedContainer();
-        feedContainer.innerHTML = '<div class="loading">Loading feed...</div>';
-
-        try {
-            const response = await fetch(project.feedUrl);
-            if (!response.ok) throw new Error('Failed to fetch feed');
-            
-            const text = await response.text();
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(text, 'application/xml');
-            
-            const items = this.parseAtomFeed(xml);
-            this.displayFeedItems(items, feedContainer);
-        } catch (error) {
-            feedContainer.innerHTML = `
-                <div class="error">
-                    Failed to load feed: ${error.message || 'Unknown error'}
-                </div>
-            `;
+        
+        if (project.entries.length === 0) {
+            feedContainer.innerHTML = '<div class="error">No entries found</div>';
+            return;
         }
+
+        feedContainer.innerHTML = project.entries.map(entry => {
+            // Fix image paths in the content to be relative to the project directory
+            let content = entry.content.replace(
+                /!\[(.*?)\]\((.*?)\)/g, 
+                (match, alt, src) => `![${alt}](project_feeds/${project.directory}/${src})`
+            );
+            
+            return `
+                <article class="feed-item">
+                    <h2><a href="${entry.link}">${entry.title}</a></h2>
+                    <div class="meta">
+                        Last updated: ${new Date(entry.date).toLocaleDateString()}
+                    </div>
+                    <div class="content">${content}</div>
+                </article>
+            `;
+        }).join('');
     }
 
     createFeedContainer() {
@@ -118,40 +235,6 @@ class FeedViewer {
         feedContainer.className = 'feed-container';
         this.container.appendChild(feedContainer);
         return feedContainer;
-    }
-
-    parseAtomFeed(xml) {
-        const entries = Array.from(xml.getElementsByTagName('entry'));
-        
-        return entries.map(entry => ({
-            title: entry.querySelector('title')?.textContent || 'Untitled',
-            link: entry.querySelector('link')?.getAttribute('href') || '#',
-            id: entry.querySelector('id')?.textContent || '',
-            updated: entry.querySelector('updated')?.textContent || '',
-            content: entry.querySelector('content')?.textContent || '',
-            author: {
-                name: entry.querySelector('author name')?.textContent || 'Unknown',
-                email: entry.querySelector('author email')?.textContent
-            }
-        }));
-    }
-
-    displayFeedItems(items, container) {
-        if (items.length === 0) {
-            container.innerHTML = '<div class="error">No items found in feed</div>';
-            return;
-        }
-
-        container.innerHTML = items.map(item => `
-            <article class="feed-item">
-                <h2><a href="${item.link}">${item.title}</a></h2>
-                <div class="meta">
-                    By ${item.author?.name || 'Unknown'} • 
-                    ${new Date(item.updated).toLocaleDateString()}
-                </div>
-                <div class="content">${item.content}</div>
-            </article>
-        `).join('');
     }
 }
 

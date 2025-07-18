@@ -1,50 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <!-- Feed metadata -->
-  <title>Project Name</title>
-  <link href="https://your-project-url.com"/>
-  <updated>2024-03-20T12:00:00Z</updated>
+  <title>Low Power Speech Recognition</title>
+  <link href="https://dakpro.github.io"/>
+  <updated>2025-07-18T14:39:00Z</updated>
   <author>
-    <name>Your Name</name>
-    <email>your.email@example.com</email>
+    <name>Danylo Kvit</name>
+    <email>kvit.2006@gmail.com</email>
   </author>
   <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
 
-  <!-- Feed entries -->
   <entry>
-    <title>First Update</title>
-    <link href="https://your-project-url.com/updates/1"/>
+    <title>Week 1: Initial Results</title>
+    <link href="https://dakpro.github.io/low_power_speech_recognition/week1"/>
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-    <updated>2024-03-20T12:00:00Z</updated>
-    <summary>Brief summary of the update</summary>
+    <updated>2025-07-18T14:39:00Z</updated>
+    <summary>First week's progress on power consumption optimization</summary>
     <content type="html">
       <![CDATA[
-        <h2>Project Update</h2>
-        <p>Detailed description of what was done in this update.</p>
-        <ul>
-          <li>Added feature X</li>
-          <li>Fixed bug Y</li>
-          <li>Improved performance of Z</li>
-        </ul>
-      ]]>
-    </content>
-  </entry>
+# Week 1: Initial Results
 
-  <entry>
-    <title>Project Started</title>
-    <link href="https://your-project-url.com/updates/start"/>
-    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6b</id>
-    <updated>2024-03-19T10:00:00Z</updated>
-    <summary>Project initialization</summary>
-    <content type="html">
-      <![CDATA[
-        <h2>Project Initialized</h2>
-        <p>Initial setup of the project completed.</p>
-        <ul>
-          <li>Created repository</li>
-          <li>Set up basic structure</li>
-          <li>Added documentation</li>
-        </ul>
+## Power Consumption Analysis
+
+Our initial tests show promising results in power reduction. The graph below shows the comparison between baseline and optimized versions:
+
+![Power consumption comparison](w1.1.png)
+
+## Key Findings
+
+* Base power draw: 2.4W
+* Optimized power draw: 1.3W
+* Peak reduction: 45%
+
+## Implementation Details
+
+The optimization primarily came from:
+
+1. Efficient feature extraction
+2. Quantized model weights
+3. Improved DSP pipeline
+
+## Next Steps
+
+- [ ] Further optimize the feature extraction
+- [ ] Test on more devices
+- [ ] Document the power measurement methodology
       ]]>
     </content>
   </entry>
