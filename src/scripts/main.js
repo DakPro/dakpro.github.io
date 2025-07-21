@@ -28,7 +28,7 @@ class FeedViewer {
         if (this.currentProject) {
             const linkElement = document.getElementById('atomFeedLink');
             if (linkElement) {
-                linkElement.href = `project_feeds/${this.currentProject.directory}/feed.xml`;
+                linkElement.href = `feeds/${this.currentProject.directory}.xml`;
                 linkElement.title = `${this.currentProject.name} Atom Feed`;
             }
         }
@@ -228,7 +228,7 @@ class FeedViewer {
         feedContainer.innerHTML = `
             <div class="feed-header">
                 <h1>${project.config.feed.title}</h1>
-                <p>Subscribe via <a href="project_feeds/${project.directory}/feed.xml">Atom feed</a></p>
+                <p>Subscribe via <a href="feeds/${project.directory}.xml">Atom feed</a></p>
             </div>
             ${project.entries.map(entry => `
                 <article class="feed-item">

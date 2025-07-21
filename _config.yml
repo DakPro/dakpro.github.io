@@ -1,0 +1,16 @@
+name: Your Site Name
+url: https://dakpro.github.io # Replace with your actual GitHub Pages URL
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git 

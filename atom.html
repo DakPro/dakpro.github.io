@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Atom Feed</title>
+</head>
+<body>
+<script>
+async function generateAtomFeed() {
+    // Get the project from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectDir = urlParams.get('project');
+    
+    if (!projectDir) {
+        document.body.textContent = 'Error: No project specified';
+        return;
+    }
+
+    try {
+        // Load project feed configuration
+        const feedEntriesInfo = await fetch(`project_feeds/${projectDir}/feed_entries.json`);
+        if (!feedEntriesInfo.ok) {
+            throw new Error(`Failed to load feed configuration: ${feedEntriesInfo.status}`);
+        }
+        const feedEntriesInfoJson = await feedEntriesInfo.json();
+
+        // Load all entries
+        const entriesListJson = [];
+        for (const entry of feedEntriesInfoJson.entries) {
+            try {
+                const response = await fetch(`project_feeds/${projectDir}/${entry.source}`);
+                if (!response.ok) continue;
+                
+                const content = await response.text();
+                entriesListJson.push({
+                    title: entry.title,
+                    content: markdownToHtml(content, projectDir),
+                    date: entry.updated,
+                    link: entry.link,
+                    id: entry.id
+                });
+            } catch (error) {
+                console.error(`Failed to load ${entry.source}:`, error);
+            }
+        }
+
+        // Sort entries by date
+        entriesListJson.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        // Generate Atom XML
+        const atomXml = `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>${feedEntriesInfoJson.feed.title}</title>
+    <link href="${feedEntriesInfoJson.feed.link}"/>
+    <id>${feedEntriesInfoJson.feed.id}</id>
+    <updated>${entriesListJson[0]?.date || new Date().toISOString()}</updated>
+    <author>
+        <name>${feedEntriesInfoJson.feed.author.name}</name>
+        ${feedEntriesInfoJson.feed.author.email ? `<email>${feedEntriesInfoJson.feed.author.email}</email>` : ''}
+    </author>
+    ${entriesListJson.map(entry => `
+    <entry>
+        <title>${entry.title}</title>
+        <link href="${entry.link}"/>
+        <id>${entry.id}</id>
+        <updated>${entry.date}</updated>
+        <content type="html"><![CDATA[${entry.content}]]></content>
+    </entry>
+    `).join('\n')}
+</feed>`;
+
+        // Set content type and display the feed
+        document.documentElement.innerHTML = '';
+        document.documentElement.appendChild(document.createTextNode(atomXml));
+        document.contentType = 'application/atom+xml';
+        
+        // Force download/display as XML
+        const blob = new Blob([atomXml], { type: 'application/atom+xml' });
+        const url = window.URL.createObjectURL(blob);
+        window.location.href = url;
+
+    } catch (error) {
+        document.body.textContent = `Error generating feed: ${error.message}`;
+    }
+}
+
+// Markdown to HTML conversion function (copied from main.js)
+function markdownToHtml(markdownText, projectDir) {
+    let htmlText = markdownText
+        // Convert headers
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        // Convert lists
+        .replace(/^\* (.*$)/gm, '<li>$1</li>')
+        .replace(/^- (.*$)/gm, '<li>$1</li>')
+        .replace(/^[0-9]+\. (.*$)/gm, '<li>$1</li>')
+        // Convert code blocks
+        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+        // Convert inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Convert paragraphs (but not empty lines)
+        .replace(/^(?!<[h|l|p|u|c])(.*[^\s].*)$/gm, '<p>$1</p>')
+        // Fix image paths
+        .replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
+            const imagePath = src.startsWith('http') ? src : `project_feeds/${projectDir}/${src}`;
+            return `<img src="${imagePath}" alt="${alt}">`;
+        })
+        // Convert links
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        // Convert emphasis
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+        // Convert blockquotes
+        .replace(/^>(.*$)/gm, '<blockquote>$1</blockquote>');
+
+    return htmlText;
+}
+
+// Generate the feed when the page loads
+generateAtomFeed();
+</script>
+</body>
+</html> 
