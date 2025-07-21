@@ -7,10 +7,12 @@ Many models are available to choose from:
 
 ![Models](week1.1.png)
 Choice of model:
-1. By taking into account other processes running on the device -- better for deployment
-2. Customizable by user?
+<ol>
+<li> By taking into account other processes running on the device -- better for deployment
+<li> Customizable by user?
 <i>There can be some custom vocabulary/promting added to the model -- interesting what it can be achieved with it.</i>
 Training dataset is 2/3 english and 1/3 uneven mix, but model's "knowledge" is transferable across the languages (for instance slavic languages parts enhance each other).
+</ol>
 ***
 Installed both whisper and whisper.cpp on Mac
 ***
@@ -39,14 +41,15 @@ Booting rPi with 64-bit standart (not headless) OS.
 ! don't forget about setting host when writing OS to the SD-card
 
 <i>just figured out you can update bootloader with the same sd - just different stuff needs to be loaded on it. Could I fix the "broken" rPi by updating the boot? (to be done)</i>
-
-1. connect both rPi and Mac to an ethernet switch (NetGear GS108 in my case)
+<ol>
+<li>. connect both rPi and Mac to an ethernet switch (NetGear GS108 in my case)
 
 <i>Had problem with detecting connection from rPi to the switch.</i>
 
-2. When using ethernet on Mac, one should add the ethernet as service. (Done in *Settings/Network*)
+<li>. When using ethernet on Mac, one should add the ethernet as service. (Done in *Settings/Network*)
 
-3. To make the connection work, one should make static IP addresses on the connection for both Mac and rPi
+<li>. To make the connection work, one should make static IP addresses on the connection for both Mac and rPi
+</ol>
 
 For Mac:
 <ol>
