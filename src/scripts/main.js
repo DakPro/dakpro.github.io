@@ -36,28 +36,22 @@ class FeedViewer {
 
     async loadProjectFeeds() {
         try {
-            console.log('Loading projects.json...');
             const response = await fetch('project_feeds/projects.json');
             if (!response.ok) throw new Error(`Failed to load projects: ${response.status} ${response.statusText}`);
             const data = await response.json();
-            console.log('Loaded projects:', data);
             
             for (const project of data.projects) {
                 try {
                     console.log(`Loading config for project ${project.name}...`);
-                    const configResponse = await fetch(`project_feeds/${project.directory}/feed_entries.json`);
-                    if (!configResponse.ok) {
-                        throw new Error(`Failed to load feed configuration: ${configResponse.status} ${configResponse.statusText}`);
+                    const feedEntriesInfo = await fetch(`project_feeds/${project.directory}/feed_entries.json`);
+                    if (!feedEntriesInfo.ok) {
+                        throw new Error(`Failed to load feed configuration: ${feedEntriesInfo.status} ${feedEntriesInfo.statusText}`);
                     }
-                    const config = await configResponse.json();
-                    console.log(`Loaded config for ${project.name}:`, config);
-
-                    const entries = await this.loadEntries(project.directory, config);
-                    console.log(`Loaded ${entries.length} entries for ${project.name}`);
-                    
-                    if (entries.length > 0) {
-                        this.addProject(project.name, entries, project.directory, config);
-                        await this.generateAtomFeed(project.directory, config, entries);
+                    const feedEntriesInfoJson = await feedEntriesInfo.json();
+                    const feedsEntriesJson = await this.loadEntries(project.directory, feedEntriesInfoJson);
+                    if (feedsEntriesJson.length > 0) {
+                        this.addProject(project.name, feedsEntriesJson, project.directory, feedEntriesInfoJson);
+                        await this.generateAtomFeed(project.directory, feedEntriesInfoJson, feedsEntriesJson);
                     } else {
                         console.warn(`No entries found for project ${project.name}`);
                     }
@@ -85,18 +79,14 @@ class FeedViewer {
         }
     }
 
-    async loadEntries(projectDir, config) {
+    async loadEntries(projectDir, feedEntriesInfoJson) {
         const entries = [];
-        
-        for (const entry of config.entries) {
+        for (const entry of feedEntriesInfoJson.entries) {
             try {
-                console.log(`Loading entry ${entry.source} for ${projectDir}...`);
                 const response = await fetch(`project_feeds/${projectDir}/${entry.source}`);
                 if (!response.ok) {
-                    console.warn(`Failed to load ${entry.source}: ${response.status} ${response.statusText}`);
                     continue;
                 }
-                
                 const content = await response.text();
                 entries.push({
                     title: entry.title,
@@ -105,26 +95,24 @@ class FeedViewer {
                     link: entry.link,
                     id: entry.id
                 });
-                console.log(`Successfully loaded entry ${entry.source}`);
             } catch (error) {
                 console.error(`Failed to load ${entry.source}:`, error);
             }
         }
-        
         return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }
 
-    async generateAtomFeed(projectDir, config, entries) {
+    async generateAtomFeed(projectDir, feedEntriesInfoJson, entries) {
         const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>${config.feed.title}</title>
-    <link href="${config.feed.link}"/>
+    <title>${feedEntriesInfoJson.feed.title}</title>
+    <link href="${feedEntriesInfoJson.feed.link}"/>
     <updated>${entries[0]?.date || new Date().toISOString()}</updated>
     <author>
-        <name>${config.feed.author.name}</name>
-        ${config.feed.author.email ? `<email>${config.feed.author.email}</email>` : ''}
+        <name>${feedEntriesInfoJson.feed.author.name}</name>
+        ${feedEntriesInfoJson.feed.author.email ? `<email>${feedEntriesInfoJson.feed.author.email}</email>` : ''}
     </author>
-    <id>${config.feed.id}</id>
+    <id>${feedEntriesInfoJson.feed.id}</id>
 
     ${entries.map(entry => `
     <entry>
@@ -140,8 +128,8 @@ class FeedViewer {
         console.log(`Generated Atom feed for ${projectDir}`);
     }
 
-    markdownToHtml(markdown, projectDir) {
-        let html = markdown
+    markdownToHtml(markdownText, projectDir) {
+        let htmlText = markdownText
             // Convert headers
             .replace(/^# (.*$)/gm, '<h1>$1</h1>')
             .replace(/^## (.*$)/gm, '<h2>$1</h2>')
@@ -169,20 +157,19 @@ class FeedViewer {
             // Convert blockquotes
             .replace(/^>(.*$)/gm, '<blockquote>$1</blockquote>');
 
-        // Wrap lists in ul/ol tags
-        html = html.replace(/<li>.*?<\/li>\n*/gs, match => {
-            if (match.includes('1.')) {
-                return `<ol>${match}</ol>`;
-            }
-            return `<ul>${match}</ul>`;
-        });
+        // html = html.replace(/<li>.*?<\/li>\n*/gs, match => {
+        //     if (match.includes('1.')) {
+        //         return `<ol>${match}</ol>`;
+        //     }
+        //     return `<ul>${match}</ul>`;
+        // });
 
-        return html;
+        return htmlText;
     }
 
-    addProject(name, entries, directory, config) {
+    addProject(name, entries, directory, feedEntriesInfo) {
         console.log(`Adding project ${name} with ${entries.length} entries`);
-        this.projects.push({ name, entries, directory, config });
+        this.projects.push({ name, entries, directory, config: feedEntriesInfo });
         this.updateTabs();
     }
 

@@ -1,4 +1,4 @@
-## Day 1: Whisper
+## Whisper
 Went through the paper on Whisper - speech recognition model from OpenAI.
 
 It's open source and available on GitHub.
@@ -55,8 +55,7 @@ For Mac:
   <li>. Input the static address (I chose 192.168.5.1)
   <li>. Subnet musk is left 255.255.0.0, other empty fields are left empty
 </ol>
-For rPi:
-  * For monitor system
+For standart rPi setup:
   <ol>
     <li>. Click on the double-arrow network symbol in the top right corner
     <li>. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
@@ -70,7 +69,7 @@ For rPi:
     <li>. Reboot the rPi
   </ol>
 
-  * For headless system:**TODO**
+For headless rPi setup:**TODO**
 
 Finally, we got the working rPi-Mac connection
 
