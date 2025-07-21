@@ -126,6 +126,14 @@ class FeedViewer {
 </feed>`;
 
         console.log(`Generated Atom feed for ${projectDir}`);
+        console.log('--------------------------------');
+        console.log('feedEntriesInfoJson given:', feedEntriesInfoJson);
+        console.log('--------------------------------');
+        console.log('entries given:', entries);
+        console.log('--------------------------------');
+        console.log('Atom feed generated:', atomXml);
+        console.log('--------------------------------');
+        console.log('--------------------------------');
     }
 
     markdownToHtml(markdownText, projectDir) {
