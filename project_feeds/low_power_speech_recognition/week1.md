@@ -50,15 +50,16 @@ Booting rPi with 64-bit standart (not headless) OS.
 
 For Mac:
 <ol>
-  <li>. goto *Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab*
-  <li>. change *configure ipv4* to manual
-  <li>. Input the static address (I chose 192.168.5.1)
-  <li>. Subnet musk is left 255.255.0.0, other empty fields are left empty
+  <li> goto Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab
+  <li> change configure ipv4 to manual
+  <li> Input the static address (I chose 192.168.5.1)
+  <li> Subnet mask is left 255.255.0.0, other empty fields are left empty
 </ol>
+
 For standart rPi setup:
-  <ol>
-    <li>. Click on the double-arrow network symbol in the top right corner
-    <li>. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
+<ol>
+    <li> Click on the double-arrow network symbol in the top right corner
+    <li> Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
     <i> note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
     </i>
     <i> also set cloned MAC address to Permanent - not sure I completely understand what it does </i>
@@ -67,7 +68,7 @@ For standart rPi setup:
     <li>. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
     <li>. Save
     <li>. Reboot the rPi
-  </ol>
+</ol>
 
 For headless rPi setup:**TODO**
 

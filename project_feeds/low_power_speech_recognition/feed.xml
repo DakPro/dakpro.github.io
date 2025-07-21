@@ -57,15 +57,16 @@ nice tool to record audio
 </ol>
 <p>For Mac:</p>
 <ol>
-  <li>. goto *Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab*
-  <li>. change *configure ipv4* to manual
-  <li>. Input the static address (I chose 192.168.5.1)
-  <li>. Subnet musk is left 255.255.0.0, other empty fields are left empty
+  <li> goto Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab
+  <li> change configure ipv4 to manual
+  <li> Input the static address (I chose 192.168.5.1)
+  <li> Subnet mask is left 255.255.0.0, other empty fields are left empty
 </ol>
-For standart rPi setup:
-  <ol>
-    <li>. Click on the double-arrow network symbol in the top right corner
-    <li>. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
+
+<p>For standart rPi setup:</p>
+<ol>
+    <li> Click on the double-arrow network symbol in the top right corner
+    <li> Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
     <i> note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
     </i>
     <i> also set cloned MAC address to Permanent - not sure I completely understand what it does </i>
@@ -74,14 +75,14 @@ For standart rPi setup:
     <li>. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
     <li>. Save
     <li>. Reboot the rPi
-  </ol>
+</ol>
 
 <p>For headless rPi setup:<strong>TODO</strong></p>
 <p>Finally, we got the working rPi-Mac connection</p>
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#x72;&#x40;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#x79;&#112;&#x69;&#46;&#x6c;&#111;&#x63;&#97;&#x6c;">&#x75;&#115;&#x65;&#x72;&#x40;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#x79;&#112;&#x69;&#46;&#x6c;&#111;&#x63;&#97;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#x75;&#115;&#101;&#x72;&#64;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#114;&#x79;&#x70;&#x69;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;">&#x75;&#115;&#101;&#x72;&#64;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#114;&#x79;&#x70;&#x69;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:
