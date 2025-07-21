@@ -48,10 +48,10 @@ class FeedViewer {
                         throw new Error(`Failed to load feed configuration: ${feedEntriesInfo.status} ${feedEntriesInfo.statusText}`);
                     }
                     const feedEntriesInfoJson = await feedEntriesInfo.json();
-                    const feedsEntriesJson = await this.loadEntries(project.directory, feedEntriesInfoJson);
-                    if (feedsEntriesJson.length > 0) {
-                        this.addProject(project.name, feedsEntriesJson, project.directory, feedEntriesInfoJson);
-                        await this.generateAtomFeed(project.directory, feedEntriesInfoJson, feedsEntriesJson);
+                    const feedsEntriesListJson = await this.loadEntries(project.directory, feedEntriesInfoJson);
+                    if (feedsEntriesListJson.length > 0) {
+                        this.addProject(project.name, feedsEntriesListJson, project.directory, feedEntriesInfoJson);
+                        await this.generateAtomFeed(project.directory, feedEntriesInfoJson, feedsEntriesListJson);
                     } else {
                         console.warn(`No entries found for project ${project.name}`);
                     }
@@ -80,7 +80,7 @@ class FeedViewer {
     }
 
     async loadEntries(projectDir, feedEntriesInfoJson) {
-        const entries = [];
+        const entriesListJson = [];
         for (const entry of feedEntriesInfoJson.entries) {
             try {
                 const response = await fetch(`project_feeds/${projectDir}/${entry.source}`);
@@ -88,7 +88,7 @@ class FeedViewer {
                     continue;
                 }
                 const content = await response.text();
-                entries.push({
+                entriesListJson.push({
                     title: entry.title,
                     content: this.markdownToHtml(content, projectDir),
                     date: entry.updated,
@@ -99,22 +99,22 @@ class FeedViewer {
                 console.error(`Failed to load ${entry.source}:`, error);
             }
         }
-        return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return entriesListJson.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }
 
-    async generateAtomFeed(projectDir, feedEntriesInfoJson, entries) {
+    async generateAtomFeed(projectDir, feedEntriesInfoJson, entriesListJson) {
         const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>${feedEntriesInfoJson.feed.title}</title>
     <link href="${feedEntriesInfoJson.feed.link}"/>
-    <updated>${entries[0]?.date || new Date().toISOString()}</updated>
+    <updated>${entriesListJson[0]?.date || new Date().toISOString()}</updated>
     <author>
         <name>${feedEntriesInfoJson.feed.author.name}</name>
         ${feedEntriesInfoJson.feed.author.email ? `<email>${feedEntriesInfoJson.feed.author.email}</email>` : ''}
     </author>
     <id>${feedEntriesInfoJson.feed.id}</id>
 
-    ${entries.map(entry => `
+    ${entriesListJson.map(entry => `
     <entry>
         <title>${entry.title}</title>
         <link href="${entry.link}"/>
@@ -129,7 +129,7 @@ class FeedViewer {
         console.log('--------------------------------');
         console.log('feedEntriesInfoJson given:', feedEntriesInfoJson);
         console.log('--------------------------------');
-        console.log('entries given:', entries);
+        console.log('entries given:', entriesListJson);
         console.log('--------------------------------');
         console.log('Atom feed generated:', atomXml);
         console.log('--------------------------------');
