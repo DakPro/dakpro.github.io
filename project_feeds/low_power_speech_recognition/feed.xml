@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Low Power Speech Recognition</title>
+    <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
+    <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+    <updated>2025-07-18T14:39:00Z</updated>
+    <author>
+        <name>Danylo Kvit</name>
+        <email>kvit.2006@gmail.com</email>
+    </author>
+    
+    <entry>
+        <title>Week 1</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week1"/>
+        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <updated>2025-07-18T14:39:00Z</updated>
+        <content type="html"><![CDATA[<h2 id="whisper">Whisper</h2>
+<p>Went through the paper on Whisper - speech recognition model from OpenAI.</p>
+<p>It&#39;s open source and available on GitHub.</p>
+<p>Many models are available to choose from:</p>
+<p><img src="week1.1.png" alt="Models">
+Choice of model:</p>
+<ol>
+<li>By taking into account other processes running on the device -- better for deployment</li>
+<li>Customizable by user?
+<i>There can be some custom vocabulary/promting added to the model -- interesting what it can be achieved with it.</i>
+Training dataset is 2/3 english and 1/3 uneven mix, but model&#39;s &quot;knowledge&quot; is transferable across the languages (for instance slavic languages parts enhance each other).</li>
+</ol>
+<hr>
+<p>Installed both whisper and whisper.cpp on Mac</p>
+<hr>
+<p>Ran transcription with whisper</p>
+<hr>
+<p>Ran transcription with whisper.cpp</p>
+<hr>
+<p><code>sox -d &lt;filename&gt;</code>
+nice tool to record audio
+-d stands for default input device</p>
+<h2 id="rpi">rPi</h2>
+<p>Tried to set up the rPI. The system didn&#39;t boot. Turns out it&#39;s the problem with the rPi itself - it didn&#39;t read from the SD card (indication of no reading: no green LED blinking, only red).</p>
+<p>Got new board - gives green light</p>
+<h2 id="new-rpi">new rPi</h2>
+<p>Booting rPi with 64-bit standart (not headless) OS.
+<i>for production and further testing - headless (Lite) version should be tested as it&#39;s smaller and faster than the standart OS.</i></p>
+<h3 id="connecting-mac-to-the-rpi-ssh-via-ethernet-via-switch">Connecting Mac to the rPi ssh via ethernet via switch</h3>
+<p>! don&#39;t forget about setting host when writing OS to the SD-card</p>
+<p><i>just figured out you can update bootloader with the same sd - just different stuff needs to be loaded on it. Could I fix the &quot;broken&quot; rPi by updating the boot? (to be done)</i></p>
+<ol>
+<li>connect both rPi and Mac to an ethernet switch (NetGear GS108 in my case)</li>
+</ol>
+<p><i>Had problem with detecting connection from rPi to the switch.</i></p>
+<ol start="2">
+<li><p>When using ethernet on Mac, one should add the ethernet as service. (Done in <em>Settings/Network</em>)</p>
+</li>
+<li><p>To make the connection work, one should make static IP addresses on the connection for both Mac and rPi</p>
+</li>
+</ol>
+<p>For Mac:</p>
+<ol>
+  <li>. goto *Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab*
+  <li>. change *configure ipv4* to manual
+  <li>. Input the static address (I chose 192.168.5.1)
+  <li>. Subnet musk is left 255.255.0.0, other empty fields are left empty
+</ol>
+For standart rPi setup:
+  <ol>
+    <li>. Click on the double-arrow network symbol in the top right corner
+    <li>. Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
+    <i> note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
+    </i>
+    <i> also set cloned MAC address to Permanent - not sure I completely understand what it does </i>
+    <li>. Set *Method* to *Manual*
+    <li>. *Add*
+    <li>. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
+    <li>. Save
+    <li>. Reboot the rPi
+  </ol>
+
+<p>For headless rPi setup:<strong>TODO</strong></p>
+<p>Finally, we got the working rPi-Mac connection</p>
+<p>To verify: turn off wifi and try
+<code>ping raspberrypi.local</code>
+Or even try to login (on my rPi I made user = &quot;user&quot;):
+<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#x72;&#x40;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#x79;&#112;&#x69;&#46;&#x6c;&#111;&#x63;&#97;&#x6c;">&#x75;&#115;&#x65;&#x72;&#x40;&#114;&#x61;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#x79;&#112;&#x69;&#46;&#x6c;&#111;&#x63;&#97;&#x6c;</a></code>
+Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
+<h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
+<p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:
+<code>
+network={
+  ssid="eduroam"
+  key_mgmt=WPA-EAP
+  eap=PEAP
+  identity="<token name>"
+  password="<password>"
+  phase1="peaplabel=0"
+  phase2="auth=MSCHAPV2"
+  ca_cert="<pathToCertificate>"
+  priority=1
+}
+</code></p>
+<p>restarting the service:
+<code>  sudo killall wpa_supplicant
+sudo wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+sudo dhclient wlan0
+</code></p>
+<p>check by
+<code>
+iwgetid
+ping 1.1.1.1
+</code></p>
+<h3 id="ran-whispercpp-on-rpi">Ran whisper.cpp on rPi</h3>
+<p>Took ~18s to transcribe 11s audio.
+Lite OS optimization wouldn&#39;t be that effective + other processes are to be run in the background.</p>
+<p>Before thinking on optimization decided to run kyutai, as if kyutai is 5 times faster, optimization efforts are wasted.</p>
+<h2 id="kyutai">Kyutai</h2>
+<p>Alternative model: kyutai</p>
+<ul>
+<li>Smaller, better performance than whisper</li>
+<li>Inputs stream instead of recording, thus much better for live transcription</li>
+<li>Only English and French</li>
+</ul>
+<p>Trying to run kyutai model on rPi</p>
+<ol>
+<li> Clone repo from git
+<li> Install rust
+<li> cd stt-rs
+<li> sudo apt install libssl-dev
+<li> export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+<li> cargo run -r ../audio/bria.mp3
+</ol>
+<i>takes a long to build - haven't tried with <code>uv</code> though </i>
+
+<p><i> github guide also includes &quot;--features cuda&quot; in the last stage, but as there&#39;s no gpu on rPi, it&#39;s been removed </i></p>
+<p>Problem: kyutai is too big and thus cannot fit into 3.3 RAM -&gt; the process gets killed</p>
+<p>sudo install python-msgpack</p>
+]]></content>
+    </entry>
+</feed>

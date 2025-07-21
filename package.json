@@ -1,0 +1,11 @@
+{
+  "name": "dakpro-feed-generator",
+  "version": "1.0.0",
+  "description": "Static feed generator for project blogs",
+  "scripts": {
+    "generate": "node scripts/generate_feeds.js"
+  },
+  "dependencies": {
+    "marked": "^4.3.0"
+  }
+} 
