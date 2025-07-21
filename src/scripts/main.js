@@ -107,13 +107,12 @@ class FeedViewer {
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>${feedEntriesInfoJson.feed.title}</title>
     <link href="${feedEntriesInfoJson.feed.link}"/>
+    <id>${feedEntriesInfoJson.feed.id}</id>
     <updated>${entriesListJson[0]?.date || new Date().toISOString()}</updated>
     <author>
         <name>${feedEntriesInfoJson.feed.author.name}</name>
         ${feedEntriesInfoJson.feed.author.email ? `<email>${feedEntriesInfoJson.feed.author.email}</email>` : ''}
     </author>
-    <id>${feedEntriesInfoJson.feed.id}</id>
-
     ${entriesListJson.map(entry => `
     <entry>
         <title>${entry.title}</title>
