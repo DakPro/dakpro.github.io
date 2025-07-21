@@ -125,7 +125,7 @@ class FeedViewer {
     `).join('\n')}
 </feed>`;
 
-        console.log(`Generated Atom feed for ${projectDir}`);
+        console.log(`Generated Atom feed for project: ${projectDir}`);
         console.log('--------------------------------');
         console.log('feedEntriesInfoJson given:', feedEntriesInfoJson);
         console.log('--------------------------------');
