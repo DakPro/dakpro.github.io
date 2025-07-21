@@ -8,18 +8,14 @@ Many models are available to choose from:
 ![Models](week1.1.png)
 Choice of model:
 <ol>
-<li> By taking into account other processes running on the device -- better for deployment
-<li> Customizable by user?
-<i>There can be some custom vocabulary/promting added to the model -- interesting what it can be achieved with it.</i>
-Training dataset is 2/3 english and 1/3 uneven mix, but model's "knowledge" is transferable across the languages (for instance slavic languages parts enhance each other).
+<li> By taking into account other processes running on the device -- better for deployment</li>
+<li> Customizable by user?</li>
 </ol>
-***
+<i>There can be some custom vocabulary/promting added to the model -- interesting what it can be achieved with it. </i>
+
 Installed both whisper and whisper.cpp on Mac
-***
 Ran transcription with whisper
-***
 Ran transcription with whisper.cpp
-***
 
 <code>sox -d \<filename\></code>
 nice tool to record audio
@@ -42,35 +38,35 @@ Booting rPi with 64-bit standart (not headless) OS.
 
 <i>just figured out you can update bootloader with the same sd - just different stuff needs to be loaded on it. Could I fix the "broken" rPi by updating the boot? (to be done)</i>
 <ol>
-<li>. connect both rPi and Mac to an ethernet switch (NetGear GS108 in my case)
+<li>. connect both rPi and Mac to an ethernet switch (NetGear GS108 in my case)</li>
 
 <i>Had problem with detecting connection from rPi to the switch.</i>
 
-<li>. When using ethernet on Mac, one should add the ethernet as service. (Done in *Settings/Network*)
+<li>. When using ethernet on Mac, one should add the ethernet as service. (Done in *Settings/Network*)</li>
 
-<li>. To make the connection work, one should make static IP addresses on the connection for both Mac and rPi
+<li>. To make the connection work, one should make static IP addresses on the connection for both Mac and rPi <li>
 </ol>
 
 For Mac:
 <ol>
-  <li> goto Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab
-  <li> change configure ipv4 to manual
-  <li> Input the static address (I chose 192.168.5.1)
-  <li> Subnet mask is left 255.255.0.0, other empty fields are left empty
+  <li> goto Settings/Network/Apple Adapter(or how else you named the service) -> Details -> TCP/IP tab </li>
+  <li> change configure ipv4 to manual </li>
+  <li> Input the static address (I chose 192.168.5.1) </li>
+  <li> Subnet mask is left 255.255.0.0, other empty fields are left empty </li>
 </ol>
 
 For standart rPi setup:
 <ol>
-    <li> Click on the double-arrow network symbol in the top right corner
-    <li> Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/
+    <li> Click on the double-arrow network symbol in the top right corner </li>
+    <li> Advanced Options/Edit Connections/Wired Connection X/IPv4 Settings/ </li>
     <i> note: previously set Link negotiation on Wired Connection X/Ethernet to Automatic - what has it fixed??
     </i>
     <i> also set cloned MAC address to Permanent - not sure I completely understand what it does </i>
-    <li>. Set *Method* to *Manual*
-    <li>. *Add*
-    <li>. Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does))
-    <li>. Save
-    <li>. Reboot the rPi
+    <li> Set *Method* to *Manual* </li>
+    <li> *Add* </li>
+    <li> Set parameters (192.168.5.2, 24, 192.168.5.1 for me (not sure what 24 does)) </li>
+    <li> Save </li>
+    <li> Reboot the rPi </li>
 </ol>
 
 For headless rPi setup:**TODO**
@@ -131,13 +127,14 @@ Alternative model: kyutai
 Trying to run kyutai model on rPi
 
 <ol>
-<li> Clone repo from git
-<li> Install rust
-<li> cd stt-rs
-<li> sudo apt install libssl-dev
-<li> export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
-<li> cargo run -r ../audio/bria.mp3
+<li> Clone repo from git </li>
+<li> Install rust </li>
+<li> cd stt-rs </li>
+<li> sudo apt install libssl-dev </li>
+<li> export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig </li>
+<li> cargo run -r ../audio/bria.mp3 </li>
 </ol>
+
 <i>takes a long to build - haven't tried with <code>uv</code> though </i>
 
 <i> github guide also includes "--features cuda" in the last stage, but as there's no gpu on rPi, it's been removed </i>
