@@ -3,12 +3,274 @@
     <title>Low Power Speech Recognition</title>
     <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
     <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
-    <updated>2025-07-18T14:39:00Z</updated>
+    <updated>2025-07-23T13:50:00Z</updated>
     <author>
         <name>Danylo Kvit</name>
         <email>kvit.2006@gmail.com</email>
     </author>
     
+    <entry>
+        <title>Week 2_1</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week2_1"/>
+        <id>urn:uuid:26a31438-e93b-469e-97df-f5543150a1f6</id>
+        <updated>2025-07-23T13:50:00Z</updated>
+        <content type="html"><![CDATA[<h2 id="week-2-part-1">Week 2 part 1</h2>
+<p>From last week, problem of memory shortage exists: track of memory usage shows that the process tries to use more and more memory, resulting in a crash and thus the process being killed by the OS.</p>
+<p>Solution 1:
+Using microSD partially as RAM:
+<code></p>
+<h1 id="enabling-usage-of-8gb-for-swapping">Enabling usage of 8GB for swapping</h1>
+<p>sudo fallocate -l 8G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile</p>
+<h1 id="making-it-permanent">Making it permanent</h1>
+<p>echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab</p>
+<p>...</p>
+<h1 id="disabling-swapping">Disabling swapping</h1>
+<p>sudo swapoff /swapfile</p>
+<h1 id="permanent-disabling">Permanent disabling</h1>
+<p>sudo rm /swapfile
+... (remove line from fstab)
+sudo reboot
+</code></p>
+<p>This showed that the model needs only ________ more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.</p>
+<p>One could 1) use ssd instead - too costly and crosses idea of small-power; 2) use rPi with bigger RAM (currenty 4 gb).</p>
+<h2 id="returning-back-to-whispercpp">Returning back to whisper.cpp</h2>
+<h3 id="evaluation-of-the-three-models">Evaluation of the three models</h3>
+<p>Decided to do evaluation of speed of transcription using different models.</p>
+<p>Here is time and memory usage for transcribing an 11s JFK speech using 4/4 threads and standart OS:</p>
+<table>
+    <tr>
+        <th>Model</th>
+        <th>Time</th>
+        <th>Memory</th>
+    </tr>
+    <tr>
+        <td>tiny</td>
+        <td>8.3 s</td>
+        <td>77 MB</td>
+    </tr>
+    <tr>
+        <td>tiny.en</td>
+        <td>8.5 s</td>
+        <td>77 MB</td>
+    </tr>
+    <tr>
+        <td>base</td>
+        <td>18 s</td>
+        <td>147 MB</td>
+    </tr>
+    <tr>
+        <td>base.en</td>
+        <td>21 s</td>
+        <td>256MB</td>
+    </tr>
+    <tr>
+        <td>small</td>
+        <td>64 s</td>
+        <td>487 MB</td>
+    </tr>
+    <tr>
+        <td>small.en</td>
+        <td>65 s</td>
+        <td>487 MB</td>
+    </tr>
+</table>
+
+<p>The performance test was performed once and only on one recording.</p>
+<p>Optimization of loading time and other inter-sample could be considered for real-time transcription.</p>
+<p><i>Same evaluation on rPi 5 (possibly with 8gb RAM) could be reasonable due to CPU difference, but despite being 2x times faster, it requires fan/active cooling.</i></p>
+<p>After iterational refinement, the following script is used for evaluation:</p>
+<code>
+#!/bin/bash
+
+<p>models=()
+while [ $# -gt 0 ]; do
+  models+=( &quot;$1&quot; )
+  shift
+done</p>
+<p>echo &quot;models: ${models[@]}&quot;
+touch report.log
+echo &quot;Report on model evaluation. The duration of sample recording is 11s (JFK speech)&quot; &gt; report.log
+cd whisper.cpp
+echo -n &quot;Building whisper-cli... &quot;
+cmake -B build &gt; /dev/null
+cmake --build build -j --config Release &gt; /dev/null
+echo &quot;whisper-cli build&quot;
+base_models=(&quot;tiny&quot; &quot;tiny.en&quot; &quot;base&quot; &quot;base.en&quot; &quot;small&quot; &quot;small.en&quot; &quot;medium&quot; &quot;medium.en&quot;)
+echo &quot;-----------------------------&quot;
+echo &quot;-----------------------------&quot; &gt;&gt; ../report.log</p>
+<p>is_base_model(){
+     for bm in &quot;${base_models[@]}&quot;; do
+    if [[ &quot;$1&quot; =~ ^&quot;${bm}&quot;$ ]]; then
+       echo &quot;$1 IS base model&quot;
+       return 0
+    fi
+  done
+    echo &quot;$1 is not a base model&quot;
+    return 1
+}</p>
+<p>for model in &quot;${models[@]}&quot;; do
+    echo &quot;Model $model&quot; &gt;&gt; ../report.log
+    if is_base_model $model; then
+        echo &quot;Starting model $model evaluation&quot;
+        if [ ! -f models/$model.bin ]; then
+            echo -n &quot;Model not found... Downloading $model... &quot;
+                  sh ./models/download-ggml-model.sh $model &gt; /dev/null
+            mv models/ggml-$model.bin models/$model.bin
+                  echo &quot;Downloaded&quot;
+        fi
+        path=&quot;models/$model.bin&quot;
+    else
+        echo -n &quot;Looking for quantized model $model... &quot;
+        if [ ! -f quantized_models/$model.bin ]; then
+            echo &quot;Quantized model not found. Skipping...&quot;
+            continue
+        fi
+        path=&quot;quantized_models/$model.bin&quot;
+        echo &quot;Quantized model found&quot;
+    fi
+    echo -n &quot;Runtime: &quot; &gt;&gt; ../report.log
+    echo -n &quot;Running $model... &quot;
+    ./build/bin/whisper-cli -m $path -f samples/jfk.wav &gt; tmp.out 2&gt;&amp;1</p>
+<h1 id="for-debugging">for debugging</h1>
+<h1 id="cat-tmpout">cat tmp.out</h1>
+<p>  grep -i -E &quot;total memory|total time&quot; tmp.out &gt;&gt; ../report.log
+  echo &quot;run&quot;
+  echo &quot;----------------------------------&quot; &gt;&gt; ../report.log
+  echo &quot;----------------------------------&quot;
+done
+</code></p>
+<h3 id="quantization-of-whisper">Quantization of whisper</h3>
+<p>Unlike kyutai, whisper supports built-in quantization.</p>
+<p>Notes on choosing quantizations:</p>
+<p>Qx_y - x bits per weight, y - legacy flag, deprecated in favour of Qx_K</p>
+<p>Qx_K - K-quants, better than standard, have mixed bit-widths</p>
+<p>TQx - ternary quantization (ters instead of bits), extreme compression and quality drops too much</p>
+<p>IQx_s - importance-aware quantization, much better quality for the same bit rates. s - size (S/M/L)</p>
+<p>Based on this, will try with IQ4_M first.</p>
+<hr>
+<p>After spending some time figuring why the model doesn&#39;t want to be quantized to IQ4_M, it turns out that models possible for quantization are listed in lines 50-80 of file common-ggml.cpp.</p>
+<p>After small experimenting with <code>base</code> model:</p>
+<p>q5_0 - improvement from 18.1 to 14.3 (encoding time: 14.5 to 11.4 )</p>
+<p>q2_k - model starts outputing &quot;you you you&quot; -&gt; not enough quality</p>
+<p>q5_k - improvement from 18.1 to 13.2 (encoding time: 14.7 to 10.6)</p>
+<p>Further evaluations:</p>
+<h3 id="model-evaluation-on-11s-sample">Model Evaluation on 11s sample</h3>
+<caption> Model Evaluation Report (11s JFK Speech Sample)</caption>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Runtime (ms)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="2" style="background-color: #e0e0e0; font-weight: bold;">Small Models</td>
+      </tr>
+      <tr>
+        <td>small-q2_k</td>
+        <td>38435.32</td>
+      </tr>
+      <tr>
+        <td>small-q3_k</td>
+        <td>46188.63</td>
+      </tr>
+      <tr>
+        <td>small-q4_0</td>
+        <td>39840.25</td>
+      </tr>
+      <tr>
+        <td>small-q4_1</td>
+        <td>39112.40</td>
+      </tr>
+      <tr>
+        <td>small-q4_k</td>
+        <td>37348.32</td>
+      </tr>
+      <tr>
+        <td>small-q5_0</td>
+        <td>47047.73</td>
+      </tr>
+      <tr>
+        <td>small-q5_1</td>
+        <td>49685.18</td>
+      </tr>
+      <tr>
+        <td>small-q5_k</td>
+        <td>44725.03</td>
+      </tr>
+      <tr>
+        <td>small-q6_k</td>
+        <td>46608.82</td>
+      </tr>
+      <tr>
+        <td>small-q8_0</td>
+        <td>40472.41</td>
+      </tr>
+      <tr>
+        <td>small</td>
+        <td>76295.52</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="background-color: #e0e0e0; font-weight: bold;">Base Models</td>
+      </tr>
+      <tr>
+        <td>base-q2_k</td>
+        <td>75884.08</td>
+      </tr>
+      <tr>
+        <td>base-q3_k</td>
+        <td>13679.53</td>
+      </tr>
+      <tr>
+        <td>base-q4_0</td>
+        <td>12605.55</td>
+      </tr>
+      <tr>
+        <td>base-q4_1</td>
+        <td>12297.82</td>
+      </tr>
+      <tr>
+        <td>base-q4_k</td>
+        <td>11891.63</td>
+      </tr>
+      <tr>
+        <td>base-q5_0</td>
+        <td>14371.28</td>
+      </tr>
+      <tr>
+        <td>base-q5_1</td>
+        <td>14392.70</td>
+      </tr>
+      <tr>
+        <td>base-q5_k</td>
+        <td>13279.46</td>
+      </tr>
+      <tr>
+        <td>base-q6_k</td>
+        <td>13613.33</td>
+      </tr>
+      <tr>
+        <td>base-q8_0</td>
+        <td>12820.43</td>
+      </tr>
+      <tr>
+        <td>base</td>
+        <td>18179.38</td>
+      </tr>
+    </tbody>
+  </table>
+
+<p>Issue: q2_k should be smaller and faster, while it&#39;s not. Small-q2_k doesn&#39;t get stuck and actually produces the correct transcription, so performance decrease is somewhere else.</p>
+<p>Turns out q2_k/q3_k are optimized for AVX2/AVX512 (Single Instruction, Multiple Data commands extensions) in x86 architecture. For rPi running on ARM CPU, those are absent and quantization overhead becomes cosmic, thus slowing down in performance. Model getting stuck on &quot;you you you&quot; is likely result of poor resulting precision of the model.</p>
+<p>In theory, base-q4_k run on a headless setup should be sufficient at least for with additional bit of time for transcription (for instance, additional 5-10 mins after an hour-long meeting). But if we want to achieve real-time
+transcription, one should seek for alternatives.</p>
+]]></content>
+    </entry>
+
     <entry>
         <title>Week 1</title>
         <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week1"/>
@@ -77,7 +339,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#64;&#x72;&#x61;&#x73;&#x70;&#98;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#46;&#108;&#111;&#x63;&#x61;&#108;">&#x75;&#x73;&#x65;&#x72;&#64;&#x72;&#x61;&#x73;&#x70;&#98;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#46;&#108;&#111;&#x63;&#x61;&#108;</a></code>
+<code>ssh <a href="mailto:&#117;&#x73;&#x65;&#114;&#x40;&#x72;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;">&#117;&#x73;&#x65;&#114;&#x40;&#x72;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:
