@@ -34,7 +34,7 @@ sudo swapon /swapfile</p>
 ... (remove line from fstab)
 sudo reboot
 </code></p>
-<p>This showed that the model needs only ________ more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.</p>
+<p>This showed that the model needs only 1.6GB more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.</p>
 <p>One could 1) use ssd instead - too costly and crosses idea of small-power; 2) use rPi with bigger RAM (currenty 4 gb).</p>
 <h2 id="returning-back-to-whispercpp">Returning back to whisper.cpp</h2>
 <h3 id="evaluation-of-the-three-models">Evaluation of the three models</h3>
@@ -81,7 +81,7 @@ sudo reboot
 <p>The performance test was performed once and only on one recording.</p>
 <p>Optimization of loading time and other inter-sample could be considered for real-time transcription.</p>
 <p><i>Same evaluation on rPi 5 (possibly with 8gb RAM) could be reasonable due to CPU difference, but despite being 2x times faster, it requires fan/active cooling.</i></p>
-<p>After iterational refinement, the following script is used for evaluation:</p>
+<p>After iterational refinement, the following script is used as <code>~/eval.sh</code> for evaluation:</p>
 <code>
 #!/bin/bash
 
@@ -150,6 +150,38 @@ done
 <p>TQx - ternary quantization (ters instead of bits), extreme compression and quality drops too much</p>
 <p>IQx_s - importance-aware quantization, much better quality for the same bit rates. s - size (S/M/L)</p>
 <p>Based on this, will try with IQ4_M first.</p>
+<p>After iterational refinement, this script was used as <code>~/qt.sh</code> for quantization:</p>
+<code>
+
+<p>#!/bin/bash</p>
+<p>echo &quot;args: $@&quot;</p>
+<p>cd whisper.cpp
+if [ $# -eq 0 ]; then
+    echo &quot;Error: quantization method is not provided.&quot;
+    echo &quot;Usage: $0 &lt;quantization method 1&gt; ... [-r &lt;model: default:base&gt;] &quot;
+    exit 1
+fi	
+qms=()
+model=&quot;base&quot;
+while [ $# -gt 0 ]; do
+    echo &quot;curr arg: $1&quot;
+    if [[ &quot;$1&quot; == &quot;-m&quot; ]]; then
+        echo &quot;equals to -m&quot;
+        shift
+        model=&quot;$1&quot;
+        break
+    fi
+    qms+=(&quot;$1&quot;)
+    shift
+done
+echo &quot;qms: ${sqm[@]}&quot;</p>
+<p>if [ ! -d &quot;quantized_models&quot; ]; then<br>    mkdir quantized_models
+fi
+for qm in &quot;${qms[@]}&quot;; do
+    ./build/bin/quantize models/$model.bin quantized_models/$model-$qm.bin $qm
+done</p>
+</code>
+
 <hr>
 <p>After spending some time figuring why the model doesn&#39;t want to be quantized to IQ4_M, it turns out that models possible for quantization are listed in lines 50-80 of file common-ggml.cpp.</p>
 <p>After small experimenting with <code>base</code> model:</p>
@@ -339,7 +371,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#117;&#x73;&#x65;&#114;&#x40;&#x72;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;">&#117;&#x73;&#x65;&#114;&#x40;&#x72;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#114;&#x40;&#114;&#97;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#121;&#112;&#x69;&#46;&#108;&#111;&#99;&#x61;&#108;">&#x75;&#115;&#x65;&#114;&#x40;&#114;&#97;&#x73;&#112;&#98;&#101;&#x72;&#x72;&#121;&#112;&#x69;&#46;&#108;&#111;&#99;&#x61;&#108;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:

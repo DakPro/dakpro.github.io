@@ -25,7 +25,7 @@ sudo rm /swapfile
 sudo reboot
 </code>
 
-This showed that the model needs only ________ more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.
+This showed that the model needs only 1.6GB more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.
 
 One could 1) use ssd instead - too costly and crosses idea of small-power; 2) use rPi with bigger RAM (currenty 4 gb).
 
@@ -79,7 +79,7 @@ Optimization of loading time and other inter-sample could be considered for real
 
 <i>Same evaluation on rPi 5 (possibly with 8gb RAM) could be reasonable due to CPU difference, but despite being 2x times faster, it requires fan/active cooling.</i>
 
-After iterational refinement, the following script is used for evaluation:
+After iterational refinement, the following script is used as <code>~/eval.sh</code> for evaluation:
 
 <code>
 #!/bin/bash
@@ -163,6 +163,44 @@ TQx - ternary quantization (ters instead of bits), extreme compression and quali
 IQx_s - importance-aware quantization, much better quality for the same bit rates. s - size (S/M/L)
 
 Based on this, will try with IQ4_M first.
+
+After iterational refinement, this script was used as <code>~/qt.sh</code> for quantization:
+
+<code>
+
+#!/bin/bash
+
+echo "args: $@"
+
+cd whisper.cpp
+if [ $# -eq 0 ]; then
+	echo "Error: quantization method is not provided."
+	echo "Usage: $0 <quantization method 1> ... [-r <model: default:base>] "
+	exit 1
+fi	
+qms=()
+model="base"
+while [ $# -gt 0 ]; do
+	echo "curr arg: $1"
+	if [[ "$1" == "-m" ]]; then
+		echo "equals to -m"
+		shift
+		model="$1"
+		break
+	fi
+	qms+=("$1")
+	shift
+done
+echo "qms: ${sqm[@]}"
+
+if [ ! -d "quantized_models" ]; then  
+	mkdir quantized_models
+fi
+for qm in "${qms[@]}"; do
+	./build/bin/quantize models/$model.bin quantized_models/$model-$qm.bin $qm
+done
+
+</code>
 
 -------
 
