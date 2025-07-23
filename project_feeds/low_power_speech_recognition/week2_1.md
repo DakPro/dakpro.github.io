@@ -200,7 +200,7 @@ for qm in "${qms[@]}"; do
 	./build/bin/quantize models/$model.bin quantized_models/$model-$qm.bin $qm
 done
 
-</code><pre>
+</code></pre>
 
 -------
 

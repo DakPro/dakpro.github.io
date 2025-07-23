@@ -197,24 +197,16 @@ for qm in "${qms[@]}"; do
     ./build/bin/quantize models/$model.bin quantized_models/$model-$qm.bin $qm
 done
 
-</code><pre>
+</code></pre>
 
--------
-
-After spending some time figuring why the model doesn't want to be quantized to IQ4_M, it turns out that models possible for quantization are listed in lines 50-80 of file common-ggml.cpp.
-
-After small experimenting with <code>base</code> model:
-
-q5_0 - improvement from 18.1 to 14.3 (encoding time: 14.5 to 11.4 )
-
-q2_k - model starts outputing "you you you" -> not enough quality
-
-q5_k - improvement from 18.1 to 13.2 (encoding time: 14.7 to 10.6)
-
-Further evaluations:
-
-### Model Evaluation on 11s sample
-
+<hr>
+<p>After spending some time figuring why the model doesn&#39;t want to be quantized to IQ4_M, it turns out that models possible for quantization are listed in lines 50-80 of file common-ggml.cpp.</p>
+<p>After small experimenting with <code>base</code> model:</p>
+<p>q5_0 - improvement from 18.1 to 14.3 (encoding time: 14.5 to 11.4 )</p>
+<p>q2_k - model starts outputing &quot;you you you&quot; -&gt; not enough quality</p>
+<p>q5_k - improvement from 18.1 to 13.2 (encoding time: 14.7 to 10.6)</p>
+<p>Further evaluations:</p>
+<h3 id="model-evaluation-on-11s-sample">Model Evaluation on 11s sample</h3>
 <caption> Model Evaluation Report (11s JFK Speech Sample)</caption>
 <table>
     <thead>
@@ -321,12 +313,10 @@ Further evaluations:
     </tbody>
   </table>
 
-Issue: q2_k should be smaller and faster, while it's not. Small-q2_k doesn't get stuck and actually produces the correct transcription, so performance decrease is somewhere else.
-
-Turns out q2_k/q3_k are optimized for AVX2/AVX512 (Single Instruction, Multiple Data commands extensions) in x86 architecture. For rPi running on ARM CPU, those are absent and quantization overhead becomes cosmic, thus slowing down in performance. Model getting stuck on "you you you" is likely result of poor resulting precision of the model.
-
-In theory, base-q4_k run on a headless setup should be sufficient at least for with additional bit of time for transcription (for instance, additional 5-10 mins after an hour-long meeting). But if we want to achieve real-time
-transcription, one should seek for alternatives.
+<p>Issue: q2_k should be smaller and faster, while it&#39;s not. Small-q2_k doesn&#39;t get stuck and actually produces the correct transcription, so performance decrease is somewhere else.</p>
+<p>Turns out q2_k/q3_k are optimized for AVX2/AVX512 (Single Instruction, Multiple Data commands extensions) in x86 architecture. For rPi running on ARM CPU, those are absent and quantization overhead becomes cosmic, thus slowing down in performance. Model getting stuck on &quot;you you you&quot; is likely result of poor resulting precision of the model.</p>
+<p>In theory, base-q4_k run on a headless setup should be sufficient at least for with additional bit of time for transcription (for instance, additional 5-10 mins after an hour-long meeting). But if we want to achieve real-time
+transcription, one should seek for alternatives.</p>
 ]]></content>
     </entry>
 
@@ -398,7 +388,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#117;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#115;&#112;&#98;&#x65;&#x72;&#x72;&#121;&#x70;&#105;&#46;&#x6c;&#111;&#99;&#x61;&#x6c;">&#117;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#115;&#112;&#98;&#x65;&#x72;&#x72;&#121;&#x70;&#105;&#46;&#x6c;&#111;&#99;&#x61;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#117;&#115;&#101;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#108;&#x6f;&#99;&#97;&#x6c;">&#117;&#115;&#101;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#108;&#x6f;&#99;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:</p>
