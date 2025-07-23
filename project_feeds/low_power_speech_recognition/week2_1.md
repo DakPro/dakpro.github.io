@@ -177,7 +177,7 @@ if [ $# -eq 0 ]; then
 	echo "Error: quantization method is not provided."
 	echo "Usage: $0 <quantization method 1> ... [-r <model: default:base>] "
 	exit 1
-fi	
+fi
 qms=()
 model="base"
 while [ $# -gt 0 ]; do
@@ -193,7 +193,7 @@ while [ $# -gt 0 ]; do
 done
 echo "qms: ${sqm[@]}"
 
-if [ ! -d "quantized_models" ]; then  
+if [ ! -d "quantized_models" ]; then
 	mkdir quantized_models
 fi
 for qm in "${qms[@]}"; do
@@ -219,11 +219,11 @@ Further evaluations:
 ### Model Evaluation on 11s sample
 
 <caption> Model Evaluation Report (11s JFK Speech Sample)</caption>
-  <table>
+<table>
     <thead>
       <tr>
         <th>Model</th>
-        <th>Runtime (ms)</th>
+        <th>Runtime (s)</th>
       </tr>
     </thead>
     <tbody>
@@ -232,94 +232,94 @@ Further evaluations:
       </tr>
       <tr>
         <td>small-q2_k</td>
-        <td>38435.32</td>
+        <td>38.4</td>
       </tr>
       <tr>
         <td>small-q3_k</td>
-        <td>46188.63</td>
+        <td>46.2</td>
       </tr>
       <tr>
         <td>small-q4_0</td>
-        <td>39840.25</td>
+        <td>39.8</td>
       </tr>
       <tr>
         <td>small-q4_1</td>
-        <td>39112.40</td>
+        <td>39.1</td>
       </tr>
       <tr>
         <td>small-q4_k</td>
-        <td>37348.32</td>
+        <td>37.3</td>
       </tr>
       <tr>
         <td>small-q5_0</td>
-        <td>47047.73</td>
+        <td>47</td>
       </tr>
       <tr>
         <td>small-q5_1</td>
-        <td>49685.18</td>
+        <td>49.7</td>
       </tr>
       <tr>
         <td>small-q5_k</td>
-        <td>44725.03</td>
+        <td>44.7</td>
       </tr>
       <tr>
         <td>small-q6_k</td>
-        <td>46608.82</td>
+        <td>46.6</td>
       </tr>
       <tr>
         <td>small-q8_0</td>
-        <td>40472.41</td>
+        <td>40.5</td>
       </tr>
       <tr>
         <td>small</td>
-        <td>76295.52</td>
+        <td>76.3</td>
       </tr>
       <tr>
         <td colspan="2" style="background-color: #e0e0e0; font-weight: bold;">Base Models</td>
       </tr>
       <tr>
         <td>base-q2_k</td>
-        <td>75884.08</td>
+        <td>75.9</td>
       </tr>
       <tr>
         <td>base-q3_k</td>
-        <td>13679.53</td>
+        <td>13.7</td>
       </tr>
       <tr>
         <td>base-q4_0</td>
-        <td>12605.55</td>
+        <td>12.6</td>
       </tr>
       <tr>
         <td>base-q4_1</td>
-        <td>12297.82</td>
+        <td>12.3</td>
       </tr>
       <tr>
         <td>base-q4_k</td>
-        <td>11891.63</td>
+        <td>11.9</td>
       </tr>
       <tr>
         <td>base-q5_0</td>
-        <td>14371.28</td>
+        <td>14.4</td>
       </tr>
       <tr>
         <td>base-q5_1</td>
-        <td>14392.70</td>
+        <td>14.4</td>
       </tr>
       <tr>
         <td>base-q5_k</td>
-        <td>13279.46</td>
+        <td>13.3</td>
       </tr>
       <tr>
         <td>base-q6_k</td>
-        <td>13613.33</td>
+        <td>13.6</td>
       </tr>
       <tr>
         <td>base-q8_0</td>
-        <td>12820.43</td>
+        <td>12.8</td>
       </tr>
       <tr>
         <td>base</td>
-        <td>18179.38</td>
+        <td>18.2</td>
       </tr>
     </tbody>
   </table>
