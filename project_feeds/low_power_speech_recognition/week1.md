@@ -86,7 +86,7 @@ Also ensure in .ssh/known_hosts there's no entry for raspberrypi.local, as there
 ### Connecting rPi to eduroam via wlan
 
 needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:
-<code>
+<pre><code>
 network={
   ssid="eduroam"
   key_mgmt=WPA-EAP
@@ -98,19 +98,20 @@ network={
   ca_cert="<pathToCertificate>"
   priority=1
 }
-</code>
+</code></pre>
 
 restarting the service:
-<code>  sudo killall wpa_supplicant
+<pre><code>
+sudo killall wpa_supplicant
 sudo wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 sudo dhclient wlan0
-</code>
+</code></pre>
 
 check by
-<code>
+<pre><code>
 iwgetid
 ping 1.1.1.1
-</code>
+</code></pre>
 
 ### Ran whisper.cpp on rPi
 

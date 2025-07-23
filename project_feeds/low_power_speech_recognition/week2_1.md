@@ -4,7 +4,7 @@ From last week, problem of memory shortage exists: track of memory usage shows t
 
 Solution 1:
 Using microSD partially as RAM:
-<code>
+<pre><code>
 # Enabling usage of 8GB for swapping
 sudo fallocate -l 8G /swapfile
 sudo chmod 600 /swapfile
@@ -23,7 +23,7 @@ sudo swapoff /swapfile
 sudo rm /swapfile
 ... (remove line from fstab)
 sudo reboot
-</code>
+</code></pre>
 
 This showed that the model needs only 1.6GB more memory. As microSD memory is too slow, the model running took enormous time to complete and thus was terminated.
 
@@ -81,7 +81,7 @@ Optimization of loading time and other inter-sample could be considered for real
 
 After iterational refinement, the following script is used as <code>~/eval.sh</code> for evaluation:
 
-<code>
+<pre><code>
 #!/bin/bash
 
 models=()
@@ -146,7 +146,7 @@ for model in "${models[@]}"; do
   echo "----------------------------------" >> ../report.log
   echo "----------------------------------"
 done
-</code>
+</code></pre>
 
 ### Quantization of whisper
 
@@ -166,7 +166,7 @@ Based on this, will try with IQ4_M first.
 
 After iterational refinement, this script was used as <code>~/qt.sh</code> for quantization:
 
-<code>
+<pre><code>
 
 #!/bin/bash
 
@@ -200,7 +200,7 @@ for qm in "${qms[@]}"; do
 	./build/bin/quantize models/$model.bin quantized_models/$model-$qm.bin $qm
 done
 
-</code>
+</code><pre>
 
 -------
 
