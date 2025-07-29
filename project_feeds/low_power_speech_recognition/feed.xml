@@ -3,12 +3,41 @@
     <title>Low Power Speech Recognition</title>
     <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
     <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
-    <updated>2025-07-23T13:50:00Z</updated>
+    <updated>2025-07-29T10:37:00Z</updated>
     <author>
         <name>Danylo Kvit</name>
         <email>kvit.2006@gmail.com</email>
     </author>
     
+    <entry>
+        <title>Week 2_2</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week2_2"/>
+        <id>urn:uuid:5ce0118b-ad98-441d-b041-896a4287b46c</id>
+        <updated>2025-07-29T10:37:00Z</updated>
+        <content type="html"><![CDATA[<h2 id="week-2-part-2">Week 2 part 2</h2>
+<p>After evaluation of previous models&#39; performances, we decided to try to fit Voxtral - another transformer model.</p>
+<p>The mini version of the model is 3b parameters, weights 8 gb, which took quite a long time to download even for Mac. As kyutai with 1b parameters was way too slow on rPi, I decided that there&#39;s no point in trying to run Voxtral on rPi.</p>
+<p>At this point it became obvious that most models are made for powerful devices with GPU. Thus, a decision was made to rather look for a model definitely smaller than 1b params rather than trying out every model we pass by.</p>
+<p>Of course the exact speed of the model depends on the pipeline itself but the constant
+factor caused by this cannot outweight the fact that kuytai took about 10s to transcribe 1s
+of audio on 4/4 threads.</p>
+<h3 id="hugging-face">Hugging face</h3>
+<p>Hugging face is an open-source platform for AI models. Similar to github, not only it provides most (if not all) models with their &quot;model cards&quot;, but also has leaderboards for the models. This is what I&#39;ll be working with next.</p>
+<p><a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">Here</a> one can find
+the leaderboard of the speech-recognition models. We are interested in two criteria: WER (word error rate) and RTFx (time of the audio being transcribed/transcription time).</p>
+<p>The tiny.en model without quantization has RTFx of 348, base.en has 320.</p>
+<p>Interesting models:</p>
+<p>nvidia/parakeet-tdt_ctc-110m - 7.49 /
+5345.14</p>
+<p>nvidia/parakeet-tdt-0.6b-v2  - 6.05
+3386.02</p>
+<p>nvidia/canary-180m-flash     - 7.12 / 2053.15</p>
+<p>UsefulSensors/moonshine-tiny - 9.99 / 565.97</p>
+<p>nvidia/parakeet-rnnt-0.6b    - 7.5  / 2815.72      (no punctuation/capitalization)</p>
+<p>nvidia/parakeet-ctc-0.6b     - 7.69 / 4281.53       (no punctuation/capitalization)</p>
+]]></content>
+    </entry>
+
     <entry>
         <title>Week 2_1</title>
         <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week2_1"/>
@@ -388,7 +417,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#115;&#101;&#x72;&#64;&#x72;&#x61;&#x73;&#112;&#98;&#x65;&#x72;&#x72;&#121;&#112;&#x69;&#x2e;&#108;&#x6f;&#x63;&#x61;&#108;">&#x75;&#115;&#101;&#x72;&#64;&#x72;&#x61;&#x73;&#112;&#98;&#x65;&#x72;&#x72;&#121;&#112;&#x69;&#x2e;&#108;&#x6f;&#x63;&#x61;&#108;</a></code>
+<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#x73;&#112;&#x62;&#x65;&#114;&#x72;&#x79;&#x70;&#105;&#46;&#x6c;&#x6f;&#99;&#x61;&#x6c;">&#x75;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#x73;&#112;&#x62;&#x65;&#114;&#x72;&#x79;&#x70;&#105;&#46;&#x6c;&#x6f;&#99;&#x61;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:</p>
@@ -444,35 +473,6 @@ Lite OS optimization wouldn&#39;t be that effective + other processes are to be 
 <p><i>github guide also includes &quot;--features cuda&quot; in the last stage, but as there&#39;s no gpu on rPi, it&#39;s been removed</i></p>
 <p>Problem: kyutai is too big and thus cannot fit into 3.3 RAM -&gt; the process gets killed</p>
 <p>sudo install python-msgpack</p>
-]]></content>
-    </entry>
-
-    <entry>
-        <title>Week 2_2</title>
-        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week2_2"/>
-        <id>urn:uuid:5ce0118b-ad98-441d-b041-896a4287b46c</id>
-        <updated>2025-07-28T9:00:00Z</updated>
-        <content type="html"><![CDATA[<h2 id="week-2-part-2">Week 2 part 2</h2>
-<p>After evaluation of previous models&#39; performances, we decided to try to fit Voxtral - another transformer model.</p>
-<p>The mini version of the model is 3b parameters, weights 8 gb, which took quite a long time to download even for Mac. As kyutai with 1b parameters was way too slow on rPi, I decided that there&#39;s no point in trying to run Voxtral on rPi.</p>
-<p>At this point it became obvious that most models are made for powerful devices with GPU. Thus, a decision was made to rather look for a model definitely smaller than 1b params rather than trying out every model we pass by.</p>
-<p>Of course the exact speed of the model depends on the pipeline itself but the constant
-factor caused by this cannot outweight the fact that kuytai took about 10s to transcribe 1s
-of audio on 4/4 threads.</p>
-<h3 id="hugging-face">Hugging face</h3>
-<p>Hugging face is an open-source platform for AI models. Similar to github, not only it provides most (if not all) models with their &quot;model cards&quot;, but also has leaderboards for the models. This is what I&#39;ll be working with next.</p>
-<p><a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">Here</a> one can find
-the leaderboard of the speech-recognition models. We are interested in two criteria: WER (word error rate) and RTFx (time of the audio being transcribed/transcription time).</p>
-<p>The tiny.en model without quantization has RTFx of 348, base.en has 320.</p>
-<p>Interesting models:</p>
-<p>nvidia/parakeet-tdt_ctc-110m - 7.49 /
-5345.14</p>
-<p>nvidia/parakeet-tdt-0.6b-v2  - 6.05
-3386.02</p>
-<p>nvidia/canary-180m-flash     - 7.12 / 2053.15</p>
-<p>UsefulSensors/moonshine-tiny - 9.99 / 565.97</p>
-<p>nvidia/parakeet-rnnt-0.6b    - 7.5  / 2815.72      (no punctuation/capitalization)</p>
-<p>nvidia/parakeet-ctc-0.6b     - 7.69 / 4281.53       (no punctuation/capitalization)</p>
 ]]></content>
     </entry>
 </feed>
