@@ -3,12 +3,66 @@
     <title>Low Power Speech Recognition</title>
     <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
     <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
-    <updated>2025-07-29T10:37:00Z</updated>
+    <updated>2025-07-30T10:59:00Z</updated>
     <author>
         <name>Danylo Kvit</name>
         <email>kvit.2006@gmail.com</email>
     </author>
     
+    <entry>
+        <title>Week 3</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week3"/>
+        <id>urn:uuid:062a1210-a952-48be-9d8d-f02c5c276682</id>
+        <updated>2025-07-30T10:59:00Z</updated>
+        <content type="html"><![CDATA[<h2 id="week-3">Week 3</h2>
+<p>(Note: this blog will be updated throughout the week)</p>
+<p><code>nvidia/parakeet-tdt_ctc-110m</code> - cannot be run on rPi:
+when trying to run the program, it just exits after a while at the point of importing the
+<code>nemo.collections.asr</code>.</p>
+<p>As discovered later on, all nvidia models require nvidia GPU to run. Thus we are left with
+<code>moonhsine</code>.</p>
+<p>Also came across <code>vosk</code> and <code>faster-whisper</code> which are interesting to try.</p>
+<h3 id="results-and-comparison">Results and Comparison:</h3>
+<h4 id="moonshine-tiny">Moonshine tiny</h4>
+<p>And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.</p>
+<h4 id="moonshinebase">Moonshine/base</h4>
+<p>And so my fellow Americans ask not what your country can do for you ask what you can do for your country</p>
+<table>
+    <tr>
+        <th> Model</th>
+        <th> 11s transcription time </th>
+        <th> Word Error Rate </th>
+    </tr>
+    <tr>
+      <td> whisper.cpp/base </td>
+      <td> 21 s </td>
+      <td> 10.32 </td>
+    </tr>
+    <tr>
+      <td> whisper.cpp/base-Q4_K </td>
+      <td> 12.6 s </td>
+      <td> -- </td>
+    </tr>
+    <tr>
+      <td> Moonshine/base </td>
+      <td> 2.76 s </td>
+      <td> 9.99 </td>
+    </tr>
+    <tr>
+      <td> whisper.cpp/tiny </td>
+      <td> 8.3 s </td>
+      <td> 12.81 </td>
+    </tr>
+    <tr>
+      <td> Moonshine/tiny </td>
+      <td> 1.48 s </td>
+      <td> 12.65 </td>
+    </tr>
+
+</table>
+]]></content>
+    </entry>
+
     <entry>
         <title>Week 2_2</title>
         <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week2_2"/>
@@ -26,13 +80,14 @@ of audio on 4/4 threads.</p>
 <p><a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">Here</a> one can find
 the leaderboard of the speech-recognition models. We are interested in two criteria: WER (word error rate) and RTFx (time of the audio being transcribed/transcription time).</p>
 <p>The tiny.en model without quantization has RTFx of 348, base.en has 320.</p>
-<p>Interesting models:</p>
+<p>Interesting model:</p>
+<p>UsefulSensors/moonshine-tiny - 9.99 / 565.97</p>
+<p>The following seem extremely fast too, but later turned out that they require Nvidia GPU architecture</p>
 <p>nvidia/parakeet-tdt_ctc-110m - 7.49 /
 5345.14</p>
 <p>nvidia/parakeet-tdt-0.6b-v2  - 6.05
 3386.02</p>
-<p>nvidia/canary-180m-flash     - 7.12 / 2053.15</p>
-<p>UsefulSensors/moonshine-tiny - 9.99 / 565.97</p>
+<p>nvidia/canary-180m-flash     - 7.12 / 1213.58</p>
 <p>nvidia/parakeet-rnnt-0.6b    - 7.5  / 2815.72      (no punctuation/capitalization)</p>
 <p>nvidia/parakeet-ctc-0.6b     - 7.69 / 4281.53       (no punctuation/capitalization)</p>
 ]]></content>
@@ -417,7 +472,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#x73;&#112;&#x62;&#x65;&#114;&#x72;&#x79;&#x70;&#105;&#46;&#x6c;&#x6f;&#99;&#x61;&#x6c;">&#x75;&#115;&#x65;&#x72;&#64;&#x72;&#97;&#x73;&#112;&#x62;&#x65;&#114;&#x72;&#x79;&#x70;&#105;&#46;&#x6c;&#x6f;&#99;&#x61;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#117;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#x65;&#114;&#x72;&#x79;&#112;&#105;&#46;&#x6c;&#x6f;&#x63;&#97;&#x6c;">&#117;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#x65;&#114;&#x72;&#x79;&#112;&#105;&#46;&#x6c;&#x6f;&#x63;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:</p>

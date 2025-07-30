@@ -19,7 +19,11 @@ the leaderboard of the speech-recognition models. We are interested in two crite
 
 The tiny.en model without quantization has RTFx of 348, base.en has 320.
 
-Interesting models:
+Interesting model:
+
+UsefulSensors/moonshine-tiny - 9.99 / 565.97
+
+The following seem extremely fast too, but later turned out that they require Nvidia GPU architecture
 
 nvidia/parakeet-tdt_ctc-110m - 7.49 /
 5345.14
@@ -27,9 +31,7 @@ nvidia/parakeet-tdt_ctc-110m - 7.49 /
 nvidia/parakeet-tdt-0.6b-v2  - 6.05
 3386.02
 
-nvidia/canary-180m-flash     - 7.12 / 2053.15
-
-UsefulSensors/moonshine-tiny - 9.99 / 565.97
+nvidia/canary-180m-flash     - 7.12 / 1213.58
 
 nvidia/parakeet-rnnt-0.6b    - 7.5  / 2815.72      (no punctuation/capitalization)
 
