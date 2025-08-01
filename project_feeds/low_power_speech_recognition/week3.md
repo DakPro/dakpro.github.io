@@ -53,5 +53,55 @@ And so my fellow Americans ask not what your country can do for you ask what you
       <td> 1.48 s </td>
       <td> 12.65 </td>
     </tr>
-
 </table>
+
+### Connecting microphone to rPi
+
+Just connect it via USB.
+Run <code>arecord -l</code> to see information about connected audio devices, say card X and device Y.
+
+To make it a default audio input device (strongly recommended), add this into ~/.asoundrc:
+<pre><code>
+pcm.!default{
+    type hw
+    card X
+}
+
+ctl.!default{
+    type hw
+    card X
+}
+</code></pre>
+
+You can test it with
+<pre><code>
+# record
+arecord -D plughw:X,Y -f cd -t wav -d 5 test.wav
+# play
+aplay test.wav
+</code></pre>
+
+### Moonshine in streaming mode
+Simple demo:
+<pre><code>
+git clone https://github.com/moonshine-ai/moonshine
+uv pip install numba
+uv pip install -r moonshine/demo/moonshine-onnx/requirements.txt
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y portaudio19-dev
+# run:
+python3 moonshine/demo/moonshine-onnx/live_captions.py
+</code></pre>
+
+
+
+
+### Testing on realisticly long audios
+
+<caption>Datasets used for the <a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">model leaderboard</a></caption>
+![Models](week3.png)
+
+From the listed above, I chose SPGISpeech, Earnings-22, and AMI for evalutaion of a model, as the model will be mostly used during meetings.
+
+The raw datasets are can be included

@@ -58,8 +58,54 @@ when trying to run the program, it just exits after a while at the point of impo
       <td> 1.48 s </td>
       <td> 12.65 </td>
     </tr>
-
 </table>
+
+<h3 id="connecting-microphone-to-rpi">Connecting microphone to rPi</h3>
+<p>Just connect it via USB.
+Run <code>arecord -l</code> to see information about connected audio devices, say card X and device Y.</p>
+<p>To make it a default audio input device (strongly recommended), add this into ~/.asoundrc:</p>
+<pre><code>
+pcm.!default{
+    type hw
+    card X
+}
+
+ctl.!default{
+    type hw
+    card X
+}
+</code></pre>
+
+<p>You can test it with</p>
+<pre><code>
+# record
+arecord -D plughw:X,Y -f cd -t wav -d 5 test.wav
+# play
+aplay test.wav
+</code></pre>
+
+<h3 id="moonshine-in-streaming-mode">Moonshine in streaming mode</h3>
+<p>Simple demo:</p>
+<pre><code>
+git clone https://github.com/moonshine-ai/moonshine
+uv pip install numba
+uv pip install -r moonshine/demo/moonshine-onnx/requirements.txt
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y portaudio19-dev
+# run:
+python3 moonshine/demo/moonshine-onnx/live_captions.py
+</code></pre>
+
+
+
+
+<h3 id="testing-on-realisticly-long-audios">Testing on realisticly long audios</h3>
+<caption>Datasets used for the <a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">model leaderboard</a></caption>
+![Models](week3.png)
+
+<p>From the listed above, I chose SPGISpeech, Earnings-22, and AMI for evalutaion of a model, as the model will be mostly used during meetings.</p>
+<p>The raw datasets are can be included</p>
 ]]></content>
     </entry>
 
@@ -472,7 +518,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#117;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#x65;&#114;&#x72;&#x79;&#112;&#105;&#46;&#x6c;&#x6f;&#x63;&#97;&#x6c;">&#117;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#98;&#x65;&#114;&#x72;&#x79;&#112;&#105;&#46;&#x6c;&#x6f;&#x63;&#97;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#117;&#x73;&#x65;&#x72;&#x40;&#x72;&#97;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#x79;&#112;&#105;&#x2e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;">&#117;&#x73;&#x65;&#x72;&#x40;&#x72;&#97;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#x79;&#112;&#105;&#x2e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:</p>
