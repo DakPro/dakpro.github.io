@@ -36,6 +36,13 @@
       "updated": "2025-07-30T10:59:00Z",
       "source": "week3.md",
       "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/week3"
+    },
+    {
+      "title": "Week 4",
+      "id": "urn:uuid:fd52ec3b-5a92-480a-ab72-ab8ddc426352",
+      "updated": "2025-08-08T15:07:00Z",
+      "source": "week4.md",
+      "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/week4"
     }
   ]
 }

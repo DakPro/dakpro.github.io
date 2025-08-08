@@ -3,12 +3,51 @@
     <title>Low Power Speech Recognition</title>
     <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
     <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
-    <updated>2025-07-30T10:59:00Z</updated>
+    <updated>2025-08-08T15:07:00Z</updated>
     <author>
         <name>Danylo Kvit</name>
         <email>kvit.2006@gmail.com</email>
     </author>
     
+    <entry>
+        <title>Week 4</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week4"/>
+        <id>urn:uuid:fd52ec3b-5a92-480a-ab72-ab8ddc426352</id>
+        <updated>2025-08-08T15:07:00Z</updated>
+        <content type="html"><![CDATA[<h2 id="week-4">Week 4</h2>
+<p><a href="https://github.com/DakPro/low_power_speech_recognition">Repo</a> for the project code.
+Many of the used services use huggingface client, so setting up huggingface access token is recommended. </p>
+<h4 id="setting-up-access-token">Setting up access token</h4>
+<ol>
+<li>Login in <a href="https://huggingface.co">huggingface</a></li>
+<li>Goto <a href="https://huggingface.co/settings/profile">Settings</a></li>
+<li>Goto Access tokens</li>
+<li>Create a new token (read-only recommended)</li>
+</ol>
+<h4 id="using-access-token">Using access token</h4>
+<ol>
+<li><code>brew install huggingface-cli</code></li>
+<li><code> hf auth login </code></li>
+<li>Input the access token</li>
+</ol>
+<p>When making requests to huggingface client, programs will automatically use the token.</p>
+<h3 id="planned-structure-of-the-repo">Planned structure of the repo</h3>
+<ul>
+<li>Outer file <code> transcription_from_mic.py</code>: given a model name runs 
+a runtime transcription demo.</li>
+<li>Outer file <code> transcription_from_file.py</code>: given a model name and file 
+transcribes the file. </li>
+<li>Separate directory for each model, includes<ul>
+<li>The irreplaceable part of model pipeline (usually copied from the model source)</li>
+<li>Some stuff used before (like reports, scripts)?</li>
+<li>Interface to use the model, both for demo (with printing captions) and production</li>
+</ul>
+</li>
+<li>Directory for testing - for interaction with datasets</li>
+</ul>
+]]></content>
+    </entry>
+
     <entry>
         <title>Week 3</title>
         <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week3"/>
@@ -518,7 +557,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#117;&#x73;&#x65;&#x72;&#x40;&#x72;&#97;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#x79;&#112;&#105;&#x2e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;">&#117;&#x73;&#x65;&#x72;&#x40;&#x72;&#97;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#x79;&#112;&#105;&#x2e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#x65;&#x72;&#114;&#121;&#x70;&#x69;&#x2e;&#x6c;&#111;&#99;&#97;&#108;">&#x75;&#x73;&#x65;&#x72;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#x65;&#x72;&#114;&#121;&#x70;&#x69;&#x2e;&#x6c;&#111;&#99;&#97;&#108;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <p>needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:</p>
