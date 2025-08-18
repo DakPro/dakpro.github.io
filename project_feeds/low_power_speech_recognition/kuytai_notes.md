@@ -1,4 +1,4 @@
-### Goal
+### Goal / Story
 
 We aim to achieve running speech recognition models on low-power devices like raspberry Pi.
 
@@ -7,6 +7,10 @@ This is part of bigger framework for smart office/home, user of which wants a de
 We need the model to:
 1. To be fast enough to do real-time speech transcription
 2. To be robustly accurate
+
+So far we came across such models as whisper (c++ implementation), moonshine. Only smallest whiper model is feasable to be run on rPi (RTF: 0.77) and it's not as robust as desired. Moonshine is currently our baseline (RTF: 0.2). Other models are signifficantly slower.
+
+As main usage of a model is going to be on a streaming mode, we strongly believe that getting to run Kuytai model on rPi would be very nice (as it's innovation is best for streaming). We prefer higher accuracy over lower RTF (as long as it's still runnable on rPi with other not resource-demanding programss).
 
 *In case sections below are confusing, or you want to replicate them yourself, or you want to have more details, please take a look at my [weekly notes](https://dakpro.github.io)*
 
@@ -58,6 +62,8 @@ Time to translate continue translating the whole 5s recording: 50s
 Typical usage of CPU resources during the transcription phase:
 
 ![](processor_usage.png)
+
+----
 
 ### Quantization
 
