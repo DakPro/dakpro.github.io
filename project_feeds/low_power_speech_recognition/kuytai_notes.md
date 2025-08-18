@@ -63,4 +63,4 @@ Typical usage of CPU resources during the transcription phase:
 
 After quantization, models of whisper (that already fitted into the memory, no sd usage was needed) used twice less time for Q4-K quantization *(Note: the evaluation of the whisper models was done on an 11s audio)*:
 
-<img src="whisper_results.png" width="300">
+<img src="whisper_results.png" width="200">
