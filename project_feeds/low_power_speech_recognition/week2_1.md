@@ -1,4 +1,4 @@
-## Week 2 part 1
+# Week 2 part 1
 
 From last week, problem of memory shortage exists: track of memory usage shows that the process tries to use more and more memory, resulting in a crash and thus the process being killed by the OS.
 
@@ -32,6 +32,8 @@ One could 1) use ssd instead - too costly and crosses idea of small-power; 2) us
 ## Returning back to whisper.cpp
 
 ### Evaluation of the three models
+----
+
 Decided to do evaluation of speed of transcription using different models.
 
 Here is time and memory usage for transcribing an 11s JFK speech using 4/4 threads and standart OS:
@@ -149,7 +151,7 @@ done
 </code></pre>
 
 ### Quantization of whisper
-
+----
 Unlike kyutai, whisper supports built-in quantization.
 
 Notes on choosing quantizations:
@@ -217,7 +219,7 @@ q5_k - improvement from 18.1 to 13.2 (encoding time: 14.7 to 10.6)
 Further evaluations:
 
 ### Model Evaluation on 11s sample
-
+----
 <caption> Model Evaluation Report (11s JFK Speech Sample)</caption>
 <table>
     <thead>

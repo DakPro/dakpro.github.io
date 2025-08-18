@@ -1,25 +1,31 @@
-## Week 3
+# Week 3
+*(Note: this blog will be updated throughout the week)*
 
-(Note: this blog will be updated throughout the week)
+
+## Models
+----
 
 <code>nvidia/parakeet-tdt_ctc-110m</code> - cannot be run on rPi:
 when trying to run the program, it just exits after a while at the point of importing the
 <code>nemo.collections.asr</code>.
 
-As discovered later on, all nvidia models require nvidia GPU to run. Thus we are left with
-<code>moonhsine</code>.
+*As discovered later on, all nvidia models require nvidia GPU to run. Thus we are left with
+<code>moonhsine</code>.*
 
 
 Also came across <code>vosk</code> and <code>faster-whisper</code> which are interesting to try.
 
-### Results and Comparison:
 
-#### Moonshine tiny
+## Results and Comparison
 
+### Moonshine tiny
+
+----
 And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.
 
-#### Moonshine/base
+### Moonshine/base
 
+----
 And so my fellow Americans ask not what your country can do for you ask what you can do for your country
 
 <table>
@@ -55,8 +61,10 @@ And so my fellow Americans ask not what your country can do for you ask what you
     </tr>
 </table>
 
-### Connecting microphone to rPi
 
+## Connecting microphone to rPi
+
+----
 Just connect it via USB.
 Run <code>arecord -l</code> to see information about connected audio devices, say card X and device Y.
 
@@ -81,7 +89,10 @@ arecord -D plughw:X,Y -f cd -t wav -d 5 test.wav
 aplay test.wav
 </code></pre>
 
-### Moonshine in streaming mode
+## Moonshine in streaming mode
+
+----
+
 Simple demo:
 <pre><code>
 git clone https://github.com/moonshine-ai/moonshine
@@ -94,10 +105,8 @@ sudo apt install -y portaudio19-dev
 python3 moonshine/demo/moonshine-onnx/live_captions.py
 </code></pre>
 
-
-
-
-### Testing on realisticly long audios
+## Testing on realisticly long audios
+----
 
 <caption>Datasets used for the <a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">model leaderboard</a></caption>
 ![Models](week3.png)

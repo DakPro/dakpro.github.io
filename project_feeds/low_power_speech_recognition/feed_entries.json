@@ -43,6 +43,13 @@
       "updated": "2025-08-08T15:07:00Z",
       "source": "week4.md",
       "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/week4"
+    },
+    {
+      "title": "Kuytai notes",
+      "id": "urn:uuid:ebf6ed95-8c71-4746-add7-f9cdd32a8053",
+      "updated": "2025-08-18T13:15:00Z",
+      "source": "kuytai_notes.md",
+      "link": "https://dakpro.github.io/project_feeds/low_power_speech_recognition/kuytai_notes"
     }
   ]
 }

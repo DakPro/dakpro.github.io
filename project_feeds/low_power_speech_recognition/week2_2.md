@@ -1,4 +1,7 @@
-## Week 2 part 2
+# Week 2 part 2
+
+## Voxtral
+----
 
 After evaluation of previous models' performances, we decided to try to fit Voxtral - another transformer model.
 
@@ -10,7 +13,8 @@ Of course the exact speed of the model depends on the pipeline itself but the co
 factor caused by this cannot outweight the fact that kuytai took about 10s to transcribe 1s
 of audio on 4/4 threads.
 
-### Hugging face
+## Hugging face
+----
 
 Hugging face is an open-source platform for AI models. Similar to github, not only it provides most (if not all) models with their "model cards", but also has leaderboards for the models. This is what I'll be working with next.
 

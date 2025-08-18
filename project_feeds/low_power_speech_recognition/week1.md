@@ -1,4 +1,6 @@
+# Week 1
 ## Whisper
+----
 Went through the paper on Whisper - speech recognition model from OpenAI.
 
 It's open source and available on GitHub.
@@ -27,6 +29,7 @@ nice tool to record audio
 -d stands for default input device
 
 ## rPi
+----
 
 Tried to set up the rPI. The system didn't boot. Turns out it's the problem with the rPi itself - it didn't read from the SD card (indication of no reading: no green LED blinking, only red).
 
@@ -34,10 +37,11 @@ Got new board - gives green light
 
 ## new rPi
 
-Booting rPi with 64-bit standart (not headless) OS.
-<i>for production and further testing - headless (Lite) version should be tested as it's smaller and faster than the standart OS.</i>
+*Booting rPi with 64-bit standart (not headless) OS.
+<i>for production and further testing - headless (Lite) version should be tested as it's smaller and faster than the standart OS.</i>*
 
 ### Connecting Mac to the rPi ssh via ethernet via switch
+----
 ! don't forget about setting host when writing OS to the SD-card
 
 <i>just figured out you can update bootloader with the same sd - just different stuff needs to be loaded on it. Could I fix the "broken" rPi by updating the boot? (to be done)</i>
@@ -84,7 +88,7 @@ Or even try to login (on my rPi I made user = "user"):
 Also ensure in .ssh/known_hosts there's no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.
 
 ### Connecting rPi to eduroam via wlan
-
+----
 needs to be done via loading configuration as /etc/wpa_supplicant/wpa_supplicant.conf:
 <pre><code>
 network={
@@ -114,14 +118,14 @@ ping 1.1.1.1
 </code></pre>
 
 ### Ran whisper.cpp on rPi
-
+----
 Took ~18s to transcribe 11s audio.
 Lite OS optimization wouldn't be that effective + other processes are to be run in the background.
 
 Before thinking on optimization decided to run kyutai, as if kyutai is 5 times faster, optimization efforts are wasted.
 
 ## Kyutai
-
+----
 Alternative model: kyutai
 
 * Smaller, better performance than whisper
