@@ -22,7 +22,7 @@
 <li>To be fast enough to do real-time speech transcription</li>
 <li>To be robustly accurate</li>
 </ol>
-<p><em>In case sections below are confusing, or you want to replicate them yourself, or you want to have more details, please take a look at my <img src="https://dakpro.github.io" alt="weekly notes"></em></p>
+<p><em>In case sections below are confusing, or you want to replicate them yourself, or you want to have more details, please take a look at my <a href="https://dakpro.github.io">weekly notes</a></em></p>
 <hr>
 <h3 id="setup">Setup</h3>
 <p>Setup: rasberryPi 4 (ARM CPU), 4gb RAM, headless setup(no screen connected).</p>
@@ -635,7 +635,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#x73;&#101;&#114;&#x40;&#114;&#97;&#115;&#112;&#x62;&#x65;&#x72;&#x72;&#x79;&#112;&#x69;&#x2e;&#108;&#111;&#99;&#97;&#108;">&#x75;&#x73;&#101;&#114;&#x40;&#114;&#97;&#115;&#112;&#x62;&#x65;&#x72;&#x72;&#x79;&#112;&#x69;&#x2e;&#108;&#111;&#99;&#97;&#108;</a></code>
+<code>ssh <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#97;&#x73;&#x70;&#98;&#101;&#114;&#114;&#121;&#112;&#x69;&#x2e;&#108;&#111;&#x63;&#x61;&#108;">&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#97;&#x73;&#x70;&#98;&#101;&#114;&#114;&#121;&#112;&#x69;&#x2e;&#108;&#111;&#x63;&#x61;&#108;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <hr>
