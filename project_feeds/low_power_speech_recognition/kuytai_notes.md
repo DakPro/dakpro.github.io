@@ -8,6 +8,8 @@ We need the model to:
 1. To be fast enough to do real-time speech transcription
 2. To be robustly accurate
 
+*In case sections below are confusing, or you want to replicate them yourself, or you want to have more details, please take a look at my ![weekly notes](https://dakpro.github.io)*
+
 ----
 
 ### Setup
