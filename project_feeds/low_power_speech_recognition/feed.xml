@@ -61,7 +61,7 @@ when running on rPi with 4 GB RAM, the process gets killed due to running out of
 <p><img src="processor_usage.png" alt=""></p>
 <h3 id="quantization">Quantization</h3>
 <p>After quantization, models of whisper (that already fitted into the memory, no sd usage was needed) used twice less time for Q4-K quantization <em>(Note: the evaluation of the whisper models was done on an 11s audio)</em>:</p>
-<p><img src="whisper_results.png" alt=""></p>
+<img src="whisper_results.png" width="300">
 ]]></content>
     </entry>
 
@@ -635,7 +635,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#97;&#x73;&#x70;&#98;&#101;&#114;&#114;&#121;&#112;&#x69;&#x2e;&#108;&#111;&#x63;&#x61;&#108;">&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#97;&#x73;&#x70;&#98;&#101;&#114;&#114;&#121;&#112;&#x69;&#x2e;&#108;&#111;&#x63;&#x61;&#108;</a></code>
+<code>ssh <a href="mailto:&#117;&#x73;&#x65;&#114;&#x40;&#114;&#x61;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#121;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;">&#117;&#x73;&#x65;&#114;&#x40;&#114;&#x61;&#115;&#112;&#x62;&#101;&#x72;&#x72;&#121;&#112;&#105;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <hr>
