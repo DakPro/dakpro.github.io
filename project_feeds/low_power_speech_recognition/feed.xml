@@ -22,8 +22,8 @@
 <li>To be fast enough to do real-time speech transcription</li>
 <li>To be robustly accurate</li>
 </ol>
-<p>So far we came across such models as whisper (c++ implementation), moonshine. Only smallest whiper model is feasable to be run on rPi and it&#39;s not as robust as desired. Moonshine is currently our baseline. Other models are signifficantly slower.</p>
-<p>As main usage of a model is going to be on a streaming mode, we strongly believe that getting to run Kuytai model on rPi would be very nice (as it&#39;s innovation is best for streaming).</p>
+<p>So far we came across such models as whisper (c++ implementation), moonshine. Only smallest whiper model is feasable to be run on rPi (RTF: 0.77) and it&#39;s not as robust as desired. Moonshine is currently our baseline (RTF: 0.2). Other models are signifficantly slower.</p>
+<p>As main usage of a model is going to be on a streaming mode, we strongly believe that getting to run Kuytai model on rPi would be very nice (as it&#39;s innovation is best for streaming). We prefer higher accuracy over lower RTF (as long as it&#39;s still runnable on rPi with other not resource-demanding programss).</p>
 <p><em>In case sections below are confusing, or you want to replicate them yourself, or you want to have more details, please take a look at my <a href="https://dakpro.github.io">weekly notes</a></em></p>
 <hr>
 <h3 id="setup">Setup</h3>
@@ -638,7 +638,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#115;&#101;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#x72;&#121;&#112;&#x69;&#46;&#108;&#111;&#99;&#x61;&#108;">&#x75;&#115;&#101;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#x72;&#121;&#112;&#x69;&#46;&#108;&#111;&#99;&#x61;&#108;</a></code>
+<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#x6c;&#111;&#x63;&#x61;&#x6c;">&#x75;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#x6c;&#111;&#x63;&#x61;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <hr>
