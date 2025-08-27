@@ -3,14 +3,98 @@
     <title>Low Power Speech Recognition</title>
     <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/"/>
     <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
-    <updated>2025-08-18T13:15:00Z</updated>
+    <updated>2025-08-27T10:49:00Z</updated>
     <author>
         <name>Danylo Kvit</name>
         <email>kvit.2006@gmail.com</email>
     </author>
     
     <entry>
-        <title>Kuytai notes</title>
+        <title>Week 6</title>
+        <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/week6"/>
+        <id>urn:uuid:97f9f865-5a2c-4f26-9fc1-acf0a0d1f653</id>
+        <updated>2025-08-27T10:49:00Z</updated>
+        <content type="html"><![CDATA[<h1 id="week-6">Week 6</h1>
+<p><a href="https://www.reddit.com/r/linux/comments/1mz4gb4/happy_34th_birthday_linux/">Happy Linux birthday! (25 Aug)</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Independence_Day_of_Ukraine">Happy Ukraine independence day! (24 Aug)</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Day_of_the_National_Flag_(Ukraine)">Happy Ukrainian Flag day! (23 Aug)</a></p>
+<h2 id="difference-between-whisper-and-moonshine">Difference between Whisper and Moonshine</h2>
+<p>Due to it&#39;s architecture and training, Whisper accepts only chunks of 30s. Thus when you try real-time speech recognition, for instance so that chunks of 2s are processed at once, it automatically appends 28s of zeroes. As a result you have to perform computation as of 30s on 2s chunk.</p>
+<p>Both Whisper and moonshine are encoder-decoder transformers. Their simplified structure:</p>
+<p><img src="enc-dec-schema.jpeg" alt="">
+In Whisper, vector passed into an encoder must always correspond to 30s audio (otherwise WER <a href="https://arxiv.org/pdf/2410.15608#page=3">signifficantly increases</a>).</p>
+<p>Key difference in Moonshine is that it has type of encoder that uses Rotary Position Embeddings, so it handles inputs of varied lengths (and thus is trained on such).</p>
+<p><em>Though moonshine is much faster for streaming, its largest currently awailable model(base) has RTF~=0.3. If a whisper model has higher WER but still can transcribe 30s chunks in less than 30s, one could use whisper during meetings(where low latency is not required) for better better transcriptions</em></p>
+<h2 id="updates-on-pipeline">Updates on pipeline</h2>
+<ul>
+<li>Extended evaluation script: now it accepts more models using regex. (useful for e.g. quantization, model finetunings)</li>
+<li>New metric: RTF (real-time factor = transcription time / audio length) - evaluates RTF on a given audio chunk.
+<em>Note: many models have different RTFs depending on the audio length.</em></li>
+<li>Optimized moonshine/file_trans so it doesn&#39;t reload model/tokenizer every time an audio is called (useful for evaluation).</li>
+<li>Added Vosk. It&#39;s used as a library, so its pipeline is quite trivial. Key differences between Vosk and models considered before:<ul>
+<li>Vosk uses Neural Networks and Hidden Markov Models instead of encoder</li>
+<li>Vosk outputs are lowercase and exclude punctuation</li>
+</ul>
+</li>
+</ul>
+<h2 id="table-of-evaluated-models">Table of evaluated models</h2>
+<p><em>RTF</em> - Real-Time Factor = transcription time / audio length.</p>
+<p><em>sRTF</em> - Streaming Real-Time Factor =  transcription time / speech length.</p>
+<p><em>UPL</em> - User Perceived Latency, or latency = average time it takes for a spoken word to get displayed. For models with
+segmental transcription, the result for the start of a segment is taken.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>sRTF on rPi 4</th>
+<th>RTF on rPi 4</th>
+<th>UPL*, seconds</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Moonshine  (base)</td>
+<td>0.28-0.35 (1)</td>
+<td>0.64</td>
+<td>0.2 + 0.2×RTF</td>
+</tr>
+<tr>
+<td>Whisper.cpp (tiny)</td>
+<td>30xRTF/X **</td>
+<td>0.39 (2)</td>
+<td>X + 30×RTF</td>
+</tr>
+<tr>
+<td>Whisper.cpp (base)</td>
+<td>same as above</td>
+<td>0.74 (2)</td>
+<td>same as above</td>
+</tr>
+<tr>
+<td>Whisper.cpp (small)</td>
+<td>same as above</td>
+<td>2.44 (2)</td>
+<td>same as above</td>
+</tr>
+<tr>
+<td>Kuytai</td>
+<td>&gt;1</td>
+<td>10</td>
+<td>not feasible</td>
+</tr>
+</tbody></table>
+<p>UPL* - listed UPLs are theoretical and valid only if RTF on device is &lt; 1.
+Formulas for values are given using standard configuration of models (read below for more details).</p>
+<p>** - streaming on whisper model works by recording audio for X (default: 0.5) seconds and then
+transcribing it. The architecture transcribes audio in 30 s chunks only, thus sRTF depends on X.
+In combination with UPL explanation, X just defines balance between UPL and sRTF.</p>
+<p>(1) - Lower RTFs were observed on more consistent/faster speeches.
+(2) - RTF for whisper depends on length of an audio being transcribed. The RTF evaluation is done on 90s audio sample,
+as due to &quot;30s-input-only&quot; architecture constraint whisper gives highest RTFs on audios with length divisible by 30.</p>
+]]></content>
+    </entry>
+
+    <entry>
+        <title>Notes on Kuytai</title>
         <link href="https://dakpro.github.io/project_feeds/low_power_speech_recognition/kuytai_notes"/>
         <id>urn:uuid:ebf6ed95-8c71-4746-add7-f9cdd32a8053</id>
         <updated>2025-08-18T13:15:00Z</updated>
@@ -638,7 +722,7 @@ nice tool to record audio
 <p>To verify: turn off wifi and try
 <code>ping raspberrypi.local</code>
 Or even try to login (on my rPi I made user = &quot;user&quot;):
-<code>ssh <a href="mailto:&#x75;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#x6c;&#111;&#x63;&#x61;&#x6c;">&#x75;&#115;&#x65;&#114;&#64;&#114;&#x61;&#x73;&#x70;&#x62;&#101;&#x72;&#114;&#x79;&#112;&#x69;&#x2e;&#x6c;&#111;&#x63;&#x61;&#x6c;</a></code>
+<code>ssh <a href="mailto:&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#x61;&#115;&#112;&#x62;&#101;&#x72;&#114;&#x79;&#x70;&#x69;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;">&#x75;&#x73;&#x65;&#x72;&#x40;&#114;&#x61;&#115;&#112;&#x62;&#101;&#x72;&#114;&#x79;&#x70;&#x69;&#46;&#108;&#x6f;&#x63;&#97;&#x6c;</a></code>
 Also ensure in .ssh/known_hosts there&#39;s no entry for raspberrypi.local, as there exists a  with such URL, thus when you try to connect to ssh for the first time the website is accessed.</p>
 <h3 id="connecting-rpi-to-eduroam-via-wlan">Connecting rPi to eduroam via wlan</h3>
 <hr>
